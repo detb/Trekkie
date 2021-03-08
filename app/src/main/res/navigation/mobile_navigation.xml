@@ -7,19 +7,19 @@
 
     <fragment
         android:id="@+id/nav_home"
-        android:name="com.github.detb.trekkie.ui.home.HomeFragment"
-        android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home" />
+        android:name="com.github.detb.trekkie.ui.home.RecentFragment"
+        android:label="@string/menu_recent"
+        tools:layout="@layout/fragment_myrecenthikes" />
 
     <fragment
-        android:id="@+id/nav_gallery"
-        android:name="com.github.detb.trekkie.ui.gallery.GalleryFragment"
-        android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
+        android:id="@+id/nav_newroute"
+        android:name="com.github.detb.trekkie.ui.gallery.NewRouteFragment"
+        android:label="@string/menu_newroute"
+        tools:layout="@layout/fragment_newroute" />
 
     <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="com.github.detb.trekkie.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
+        android:id="@+id/nav_myroutes"
+        android:name="com.github.detb.trekkie.ui.slideshow.MyRoutesFragment"
+        android:label="@string/menu_myroutes"
+        tools:layout="@layout/fragment_myroutes" />
 </navigation>

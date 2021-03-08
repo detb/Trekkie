@@ -1,4 +1,4 @@
-package com.github.detb.trekkie.ui.slideshow;
+package com.github.detb.trekkie.ui.home;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,17 +14,17 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.github.detb.trekkie.R;
 
-public class SlideshowFragment extends Fragment {
+public class RecentFragment extends Fragment {
 
-    private SlideshowViewModel slideshowViewModel;
+    private RecentViewModel recentViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        slideshowViewModel =
-                new ViewModelProvider(this).get(SlideshowViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_slideshow, container, false);
-        final TextView textView = root.findViewById(R.id.text_slideshow);
-        slideshowViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+        recentViewModel =
+                new ViewModelProvider(this).get(RecentViewModel.class);
+        View root = inflater.inflate(R.layout.fragment_myrecenthikes, container, false);
+        final TextView textView = root.findViewById(R.id.text_home);
+        recentViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 textView.setText(s);

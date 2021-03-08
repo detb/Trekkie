@@ -14,17 +14,17 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.github.detb.trekkie.R;
 
-public class GalleryFragment extends Fragment {
+public class NewRouteFragment extends Fragment {
 
-    private GalleryViewModel galleryViewModel;
+    private NewRouteViewModel newRouteViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        galleryViewModel =
-                new ViewModelProvider(this).get(GalleryViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_gallery, container, false);
+        newRouteViewModel =
+                new ViewModelProvider(this).get(NewRouteViewModel.class);
+        View root = inflater.inflate(R.layout.fragment_newroute, container, false);
         final TextView textView = root.findViewById(R.id.text_gallery);
-        galleryViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+        newRouteViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 textView.setText(s);
