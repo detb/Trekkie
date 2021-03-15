@@ -1,4 +1,4 @@
-package com.github.detb.trekkie.ui.gallery;
+package com.github.detb.trekkie.ui.newroute;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

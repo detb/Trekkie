@@ -1,4 +1,4 @@
-package com.github.detb.trekkie.ui.slideshow;
+package com.github.detb.trekkie.ui.myroutes;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

@@ -5,31 +5,53 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.github.detb.trekkie.Hike;
+import com.github.detb.trekkie.HikeAdapter;
 import com.github.detb.trekkie.R;
 
-public class RecentFragment extends Fragment {
+import java.util.ArrayList;
+import java.util.List;
+
+public class RecentFragment extends Fragment implements HikeAdapter.OnListItemClickListener{
 
     private RecentViewModel recentViewModel;
+    RecyclerView hikeList;
+    HikeAdapter hikeAdapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        recentViewModel =
-                new ViewModelProvider(this).get(RecentViewModel.class);
+        recentViewModel = new ViewModelProvider(this).get(RecentViewModel.class);
+
         View root = inflater.inflate(R.layout.fragment_myrecenthikes, container, false);
-        final TextView textView = root.findViewById(R.id.text_home);
-        recentViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
+
+        hikeList = root.findViewById(R.id.rv);
+        hikeList.hasFixedSize();
+        hikeList.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+
+        recentViewModel.getHikeLiveData().observe(getViewLifecycleOwner(), hikes -> {
+            hikeAdapter = new HikeAdapter((ArrayList)hikes, RecentFragment.this);
+            hikeList.setAdapter(hikeAdapter);
+            hikeList.setItemAnimator(new DefaultItemAnimator());
         });
         return root;
     }
-}
+
+
+    @Override
+    public void onListItemClick(int clickedItemIndex) {
+            int hikeNumber = clickedItemIndex + 1;
+            Toast.makeText(getContext(), "Hike Number: " + hikeNumber, Toast.LENGTH_SHORT).show();
+        }
+    }

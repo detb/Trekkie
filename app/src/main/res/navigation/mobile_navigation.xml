@@ -13,13 +13,13 @@
 
     <fragment
         android:id="@+id/nav_newroute"
-        android:name="com.github.detb.trekkie.ui.gallery.NewRouteFragment"
+        android:name="com.github.detb.trekkie.ui.newroute.NewRouteFragment"
         android:label="@string/menu_newroute"
         tools:layout="@layout/fragment_newroute" />
 
     <fragment
         android:id="@+id/nav_myroutes"
-        android:name="com.github.detb.trekkie.ui.slideshow.MyRoutesFragment"
+        android:name="com.github.detb.trekkie.ui.myroutes.MyRoutesFragment"
         android:label="@string/menu_myroutes"
         tools:layout="@layout/fragment_myroutes" />
 </navigation>
