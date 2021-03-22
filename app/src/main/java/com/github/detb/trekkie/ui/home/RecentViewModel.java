@@ -15,6 +15,7 @@ public class RecentViewModel extends ViewModel {
     private MutableLiveData<List<Hike>> hikeLiveData = new MutableLiveData<>();
 
     public RecentViewModel() {
+
         // POPULATING ARRAY LIST -- THIS NEEDS TO BE DONE BY ACCESSING DATABASE
         ArrayList<Hike> hikes = new ArrayList<>();
         hikes.add(new Hike("Hike - 2020/02", "Beautiful place", R.drawable.ic_menu_camera));
@@ -29,4 +30,9 @@ public class RecentViewModel extends ViewModel {
     public LiveData<List<Hike>> getHikeLiveData() {
         return hikeLiveData;
     }
+
+// public void addHike(Hike hike)
+// {
+//     hikeLiveData.getValue().add(hike);
+// }
 }

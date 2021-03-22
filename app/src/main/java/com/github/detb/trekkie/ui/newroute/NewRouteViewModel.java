@@ -9,6 +9,7 @@ public class NewRouteViewModel extends ViewModel {
     private MutableLiveData<String> mText;
 
     public NewRouteViewModel() {
+
         mText = new MutableLiveData<>();
         mText.setValue("This is where you can add new routes");
     }
