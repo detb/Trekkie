@@ -6,6 +6,7 @@
     <string name="nav_header_subtitle">useremail@android.com</string>
     <string name="nav_header_desc">Profile Picture</string>
     <string name="action_settings">Settings</string>
+    <string name="mapbox_access_token">pk.eyJ1IjoibWVzdGVyYiIsImEiOiJja21rbTM1ajIweGl5MzBta20wY2VjNzRqIn0.UrJ-xzpqzli16UB6sSGrEw</string>
 
     <string name="menu_recent">My Recent Hikes</string>
     <string name="menu_newroute">New Route</string>
