@@ -8,13 +8,17 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.github.detb.trekkie.Hike;
 import com.github.detb.trekkie.HikeAdapter;
 import com.github.detb.trekkie.R;
+import com.github.detb.trekkie.ui.specificroute.SpecificRouteFragment;
 
 import java.util.ArrayList;
 
@@ -48,6 +52,13 @@ public class RecentFragment extends Fragment implements HikeAdapter.OnListItemCl
     @Override
     public void onListItemClick(int clickedItemIndex) {
             int hikeNumber = clickedItemIndex + 1;
-            Toast.makeText(getContext(), "Hike Number: " + hikeNumber, Toast.LENGTH_SHORT).show();
+
+            //Toast.makeText(getContext(), "Hike Number: " + hikeNumber, Toast.LENGTH_SHORT).show();
         }
+
+    @Override
+    public void onItemClick(Hike item) {
+
+        Toast.makeText(getContext(), "Hike " + item.getId(), Toast.LENGTH_SHORT).show();
+    }
     }

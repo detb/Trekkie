@@ -43,6 +43,7 @@ public class HikeAdapter extends RecyclerView.Adapter<HikeAdapter.ViewHolder> {
 
     public interface OnListItemClickListener {
         void onListItemClick(int clickedItemIndex);
+        void onItemClick(Hike item);
     }
 
 
@@ -62,7 +63,11 @@ public class HikeAdapter extends RecyclerView.Adapter<HikeAdapter.ViewHolder> {
 
         @Override
         public void onClick(View v) {
+            //Calls these methods on click
+            mOnListItemClickListener.onItemClick(hikes.get(getAdapterPosition()));
             mOnListItemClickListener.onListItemClick(getAdapterPosition());
+
+            System.out.println("Work");
         }
     }
 }

@@ -29,7 +29,19 @@ android {
     }
 }
 
+repositories {
+    mavenCentral()
+    maven { url 'https://mapbox.bintray.com/mapbox' }
+}
+
 dependencies {
+    def room_version = "2.2.6"
+
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
+
+    // optional - RxJava2 support for Room
+    implementation "androidx.room:room-rxjava2:$room_version"
 
 
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
@@ -42,6 +54,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0'
     implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
     implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:9.6.1'
+    implementation 'com.mapbox.mapboxsdk:mapbox-android-navigation-ui:0.42.6'
 
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
