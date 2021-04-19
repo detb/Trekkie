@@ -33,6 +33,11 @@ public class HikeRepository {
         return allHikes;
     }
 
+    public LiveData<Hike> getHike(int id)
+    {
+        return hikeDao.getHike(id);
+    }
+
     public void insert(Hike hike)
     {
         new InsertHikeAsync(hikeDao).execute(hike);

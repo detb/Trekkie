@@ -50,15 +50,21 @@ public class RecentFragment extends Fragment implements HikeAdapter.OnListItemCl
 
 
     @Override
-    public void onListItemClick(int clickedItemIndex) {
-            int hikeNumber = clickedItemIndex + 1;
-
-            //Toast.makeText(getContext(), "Hike Number: " + hikeNumber, Toast.LENGTH_SHORT).show();
-        }
-
-    @Override
     public void onItemClick(Hike item) {
 
         Toast.makeText(getContext(), "Hike " + item.getId(), Toast.LENGTH_SHORT).show();
+
+
+        FragmentTransaction fragmentTransaction = getActivity()
+                .getSupportFragmentManager().beginTransaction();
+        SpecificRouteFragment fragment = new SpecificRouteFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt("HikeId", item.getId());
+        fragment.setArguments(bundle);
+        fragmentTransaction.replace(R.id.nav_host_fragment, fragment);
+        fragmentTransaction.addToBackStack( "tag" );
+        fragmentTransaction.commit();
+
+        System.out.println("reached");
     }
     }

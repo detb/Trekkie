@@ -24,4 +24,7 @@ public interface HikeDao {
 
     @Query("SELECT * FROM HIKE_TABLE")
     LiveData<List<Hike>> getAllHikes();
+
+    @Query("SELECT * FROM HIKE_TABLE WHERE id = :id")
+    LiveData<Hike> getHike(int id);
 }
