@@ -5,6 +5,7 @@ import android.app.Application;
 import androidx.lifecycle.LiveData;
 
 import com.firebase.ui.auth.AuthUI;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class UserRepository {
@@ -31,4 +32,5 @@ public class UserRepository {
         AuthUI.getInstance()
                 .signOut(app.getApplicationContext());
     }
+
 }

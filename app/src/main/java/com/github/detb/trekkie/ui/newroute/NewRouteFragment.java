@@ -293,6 +293,7 @@ public class NewRouteFragment extends Fragment implements OnMapReadyCallback, Vi
 //                });
 //    }
 //
+
     @SuppressWarnings( {"MissingPermission"})
     private void enableLocationComponent(@NonNull Style loadedMapStyle) {
 // Check if permissions are enabled and if not request

@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.firebase.ui.auth.AuthUI;
 import com.github.detb.trekkie.db.SignInViewModel;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Arrays;
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.List;
 public class SignInActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 42;
     private SignInViewModel viewModel;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +26,7 @@ public class SignInActivity extends AppCompatActivity {
         viewModel = new ViewModelProvider(this).get(SignInViewModel.class);
         checkIfSignedIn();
         setContentView(R.layout.signin_activity);
+        mAuth = FirebaseAuth.getInstance();
     }
 
     private void checkIfSignedIn() {
@@ -46,12 +49,20 @@ public class SignInActivity extends AppCompatActivity {
         Intent signInIntent = AuthUI.getInstance()
                 .createSignInIntentBuilder()
                 .setAvailableProviders(providers)
-                .setLogo(R.drawable.logo)
+                .setLogo(R.drawable.trekkie)
                 .build();
 
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
+    public void registerUser(View v){
+        startRegisterActivity();
+    }
+
+    private void startRegisterActivity() {
+        startActivity(new Intent(this, RegisterUserActivity.class));
+        finish();
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
