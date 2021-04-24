@@ -113,35 +113,24 @@ public class NewRouteFragment extends Fragment implements OnMapReadyCallback, Vi
 
         addHike = root.findViewById(R.id.addHike);
 
-        final TextView textView = root.findViewById(R.id.text_gallery);
 
         mapView = root.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
 
-        newRouteViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });
 
+        addHike.setOnClickListener(v -> {
+            Hike hike;
+            String nameOfHike = ((EditText)root.findViewById(R.id.hike_name_string)).getText().toString();
+            String descriptionOfHike = ((EditText)root.findViewById(R.id.hike_description_string)).getText().toString();
 
-        addHike.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Hike hike;
-                String nameOfHike = ((EditText)root.findViewById(R.id.hike_name_string)).getText().toString();
-                String descriptionOfHike = ((EditText)root.findViewById(R.id.hike_description_string)).getText().toString();
+            hike = new Hike(nameOfHike, descriptionOfHike,R.drawable.defaulthike, hikePoints);
+            newRouteViewModel.pushHikeToDb(hike);
 
-                hike = new Hike(nameOfHike, descriptionOfHike,R.drawable.ic_menu_camera, hikePoints);
-                newRouteViewModel.pushHikeToDb(hike);
-
-                Toast.makeText(getContext(), "Hike Added", Toast.LENGTH_SHORT).show();
-                mapboxMap.clear();
-                ((EditText)root.findViewById(R.id.hike_name_string)).getText().clear();
-                ((EditText)root.findViewById(R.id.hike_description_string)).getText().clear();
-            }
+            Toast.makeText(getContext(), "Hike Added", Toast.LENGTH_SHORT).show();
+            mapboxMap.clear();
+            ((EditText)root.findViewById(R.id.hike_name_string)).getText().clear();
+            ((EditText)root.findViewById(R.id.hike_description_string)).getText().clear();
         });
         return root;
     }
@@ -191,7 +180,7 @@ public class NewRouteFragment extends Fragment implements OnMapReadyCallback, Vi
     @Override
     public void onMapReady(@NonNull MapboxMap mapboxMap) {
         this.mapboxMap = mapboxMap;
-        mapboxMap.setStyle(Style.OUTDOORS, new Style.OnStyleLoaded() {
+        mapboxMap.setStyle(new Style.Builder().fromUri("mapbox://styles/mesterb/cknu7vyt90oel17o5cp6azm1q"), new Style.OnStyleLoaded() {
             @Override
             public void onStyleLoaded(@NonNull Style style) {
                 enableLocationComponent(style);
@@ -213,6 +202,7 @@ public class NewRouteFragment extends Fragment implements OnMapReadyCallback, Vi
 //                });
             }
         });
+        mapboxMap.setCameraPosition(new CameraPosition.Builder().zoom(10).build());
     }
     private void addDestinationIconSymbolLayer(@NonNull Style loadedMapStyle) {
         loadedMapStyle.addImage("destination-icon-id",
@@ -252,7 +242,7 @@ public class NewRouteFragment extends Fragment implements OnMapReadyCallback, Vi
                 Toast.makeText(getContext(), "Point added", Toast.LENGTH_SHORT).show();
             }
         });
-        System.out.println(hikePoints.toString());
+
         return true;
     }
 

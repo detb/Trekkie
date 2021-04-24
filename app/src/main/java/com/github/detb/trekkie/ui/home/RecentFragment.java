@@ -38,8 +38,6 @@ public class RecentFragment extends Fragment implements HikeAdapter.OnListItemCl
         hikeList.hasFixedSize();
         hikeList.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-
-
         recentViewModel.getHikeLiveData().observe(getViewLifecycleOwner(), hikes -> {
             hikeAdapter = new HikeAdapter((ArrayList)hikes, RecentFragment.this);
             hikeList.setAdapter(hikeAdapter);
@@ -51,11 +49,7 @@ public class RecentFragment extends Fragment implements HikeAdapter.OnListItemCl
 
     @Override
     public void onItemClick(Hike item) {
-
-        Toast.makeText(getContext(), "Hike " + item.getId(), Toast.LENGTH_SHORT).show();
-
-
-        FragmentTransaction fragmentTransaction = getActivity()
+                FragmentTransaction fragmentTransaction = getActivity()
                 .getSupportFragmentManager().beginTransaction();
         SpecificRouteFragment fragment = new SpecificRouteFragment();
         Bundle bundle = new Bundle();
@@ -64,7 +58,5 @@ public class RecentFragment extends Fragment implements HikeAdapter.OnListItemCl
         fragmentTransaction.replace(R.id.nav_host_fragment, fragment);
         fragmentTransaction.addToBackStack( "tag" );
         fragmentTransaction.commit();
-
-        System.out.println("reached");
     }
     }

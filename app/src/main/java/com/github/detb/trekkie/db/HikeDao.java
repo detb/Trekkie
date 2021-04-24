@@ -27,4 +27,7 @@ public interface HikeDao {
 
     @Query("SELECT * FROM HIKE_TABLE WHERE id = :id")
     LiveData<Hike> getHike(int id);
+
+    @Query("DELETE FROM HIKE_TABLE WHERE id = :id")
+    void deleteHike(int id);
 }

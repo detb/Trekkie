@@ -23,4 +23,9 @@ public class SpecificRouteViewModel extends AndroidViewModel {
     {
         return repository.getHike(id);
     }
+
+    public void deleteHike(Hike hike)
+    {
+        repository.delete(hike);
+    }
 }

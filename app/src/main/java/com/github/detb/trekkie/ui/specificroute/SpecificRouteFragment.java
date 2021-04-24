@@ -1,6 +1,8 @@
 package com.github.detb.trekkie.ui.specificroute;
 
+import android.annotation.SuppressLint;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,11 +19,13 @@ import retrofit2.Response;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.github.detb.trekkie.Hike;
 import com.github.detb.trekkie.HikePoint;
 import com.github.detb.trekkie.R;
+import com.github.detb.trekkie.ui.home.RecentFragment;
 import com.github.detb.trekkie.ui.newroute.NewRouteFragment;
 import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.android.core.permissions.PermissionsManager;
@@ -30,8 +34,11 @@ import com.mapbox.api.directions.v5.models.DirectionsResponse;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
 import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.location.LocationComponent;
+import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions;
+import com.mapbox.mapboxsdk.location.LocationComponentOptions;
 import com.mapbox.mapboxsdk.location.modes.CameraMode;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
@@ -58,6 +65,8 @@ public class SpecificRouteFragment extends Fragment implements OnMapReadyCallbac
     private MapboxMap mapboxMap;
     private Hike specificHike;
     private TextView specificHikeTime;
+    private ImageView deleteHike;
+    private long timeValue = 1000;
 
     // variables for adding location layer
     private PermissionsManager permissionsManager;
@@ -76,6 +85,7 @@ public class SpecificRouteFragment extends Fragment implements OnMapReadyCallbac
         TextView hikeNameTextView = root.findViewById(R.id.specificHikeName);
         TextView hikeDescriptionTextView = root.findViewById(R.id.specificHikeDescription);
         ImageView hikeImageImageView = root.findViewById(R.id.specificHikePicture);
+        deleteHike = root.findViewById(R.id.delete_hike);
 
         specificHikeTime = root.findViewById(R.id.specificHikeTime);
         hikeMapView = root.findViewById(R.id.specificHikeMapView);
@@ -91,6 +101,17 @@ public class SpecificRouteFragment extends Fragment implements OnMapReadyCallbac
                 specificHike = hike;
 
             });
+
+         deleteHike.setOnClickListener(v -> {
+             specificRouteViewModel.deleteHike(specificHike);
+             Toast.makeText(getContext(), "Hike " + specificHike.getTitle() + " Deleted", Toast.LENGTH_LONG).show();
+             FragmentTransaction fragmentTransaction = getActivity()
+                     .getSupportFragmentManager().beginTransaction();
+             RecentFragment fragment = new RecentFragment();
+             fragmentTransaction.replace(R.id.nav_host_fragment, fragment);
+             fragmentTransaction.addToBackStack( "tag" );
+             fragmentTransaction.commit();
+         });
 
         return root;
 }
@@ -141,24 +162,22 @@ public class SpecificRouteFragment extends Fragment implements OnMapReadyCallbac
     @Override
     public void onMapReady(@NonNull MapboxMap mapboxMap) {
         this.mapboxMap = mapboxMap;
-        mapboxMap.setStyle(Style.OUTDOORS, new Style.OnStyleLoaded() {
+
+        mapboxMap.setStyle(new Style.Builder().fromUri("mapbox://styles/mesterb/cknu7vyt90oel17o5cp6azm1q"), new Style.OnStyleLoaded() {
             @Override
             public void onStyleLoaded(@NonNull Style style) {
                 enableLocationComponent(style);
 
                 addDestinationIconSymbolLayer(style);
                 getRoute(specificHike.hikePointList);
-                // mapboxMap.addOnMapClickListener(NewRouteFragment.this);
 
-//                boolean simulateRoute = true;
-//                NavigationLauncherOptions options = NavigationLauncherOptions.builder()
-//                        .directionsRoute(currentRoute)
-//                        .shouldSimulateRoute(simulateRoute)
-//                        .build();
-//// Call this method with Context from within an Activity
-//                NavigationLauncher.startNavigation(getActivity(), options);
+                LatLng latlng = new LatLng();
+                latlng.setLatitude(specificHike.hikePointList.get(0).position.latitude());
+                latlng.setLongitude(specificHike.hikePointList.get(0).position.longitude());
+                mapboxMap.setCameraPosition(new CameraPosition.Builder().target(latlng).zoom(8).build());
             }
         });
+
     }
 
         private void getRoute(List<HikePoint> hikePoints) {
@@ -174,9 +193,10 @@ public class SpecificRouteFragment extends Fragment implements OnMapReadyCallbac
                navRouteBuilder.addWaypoint(hikePoint.position);
            }
             navRouteBuilder.build().getRoute(new Callback<DirectionsResponse>() {
+                    @SuppressLint("SetTextI18n")
                     @Override
                     public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
-// You can get the generic HTTP info about the response
+
                         Log.d(TAG, "Response code: " + response.code());
                         if (response.body() == null) {
                             Log.e(TAG, "No routes found, make sure you set the right user and access token.");
@@ -186,12 +206,15 @@ public class SpecificRouteFragment extends Fragment implements OnMapReadyCallbac
                             return;
                         }
                         currentRoute = response.body().routes().get(0);
+
 // Draw the route on the map
                         if (navigationMapRoute != null) {
                             navigationMapRoute.removeRoute();
                         } else {
                             navigationMapRoute = new NavigationMapRoute(null, hikeMapView, mapboxMap, R.style.NavigationLocationLayerStyle);
-                            specificHikeTime.setText(String.valueOf(TimeUnit.SECONDS.toMinutes(currentRoute.duration().longValue())) + " minutes");
+
+                            timeValue = TimeUnit.SECONDS.toMinutes(currentRoute.duration().longValue()); // Doesn't update the value in time for onmapready
+                            specificHikeTime.setText(timeValue + " minutes");
                         }
                         navigationMapRoute.addRoute(currentRoute);
                     }
@@ -211,7 +234,21 @@ public class SpecificRouteFragment extends Fragment implements OnMapReadyCallbac
 // Activate the MapboxMap LocationComponent to show user location
 // Adding in LocationComponentOptions is also an optional parameter
             locationComponent = mapboxMap.getLocationComponent();
-            locationComponent.activateLocationComponent(getContext(), loadedMapStyle);
+
+            LocationComponentOptions customLocationComponentOptions = LocationComponentOptions.builder(getContext())
+                    .elevation(5)
+                    .accuracyAlpha(.6f)
+                    .accuracyColor(Color.RED)
+                    .foregroundDrawable(R.drawable.ic_baseline_circle_24)
+                    .build();
+
+            LocationComponentActivationOptions locationComponentActivationOptions =
+                    LocationComponentActivationOptions.builder(getContext(), loadedMapStyle)
+                            .locationComponentOptions(customLocationComponentOptions)
+                            .build();
+
+            locationComponent.activateLocationComponent(locationComponentActivationOptions);
+
             locationComponent.setLocationComponentEnabled(true);
 // Set the component's camera mode
             locationComponent.setCameraMode(CameraMode.TRACKING);
