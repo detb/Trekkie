@@ -22,6 +22,31 @@ public class Summary{
         }
         return null;
     }
+
+    public String getSurfaceTypeAsString() {
+        switch (value) {
+            case 0:	return "Unknown";
+            case 1:	return "Paved";
+            case 2:	return "Unpaved";
+            case 3:	return "Asphalt";
+            case 4:	return "Concrete";
+            case 5:	return "Cobblestone";
+            case 6:	return "Metal";
+            case 7:	return "Wood";
+            case 8:	return "Compacted Gravel";
+            case 9:	return "Fine Gravel";
+            case 10: return "Gravel";
+            case 11: return "Dirt";
+            case 12: return "Ground";
+            case 13: return "Ice";
+            case 14: return "Paving Stones";
+            case 15: return "Sand";
+            case 16: return "Woodchips";
+            case 17: return "Grass";
+            case 18: return "Grass Paver";
+        }
+        return null;
+    }
     @Override
     public String toString() {
         return "Summary{" +
@@ -31,4 +56,6 @@ public class Summary{
                 ", duration=" + duration +
                 '}';
     }
+
+
 }

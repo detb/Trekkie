@@ -13,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -28,6 +30,10 @@ import androidx.lifecycle.ViewModelProvider;
 import com.github.detb.trekkie.Hike;
 import com.github.detb.trekkie.HikePoint;
 import com.github.detb.trekkie.R;
+import com.github.detb.trekkie.data.Root;
+import com.github.detb.trekkie.data.Summary;
+import com.github.detb.trekkie.db.OpenRouteServiceApi;
+import com.github.detb.trekkie.db.ServiceGenerator;
 import com.github.detb.trekkie.ui.home.RecentFragment;
 import com.github.detb.trekkie.ui.newroute.NewRouteFragment;
 import com.mapbox.android.core.permissions.PermissionsListener;
@@ -35,7 +41,12 @@ import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.api.directions.v5.DirectionsCriteria;
 import com.mapbox.api.directions.v5.models.DirectionsResponse;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
+import com.mapbox.api.directions.v5.models.LegStep;
+import com.mapbox.api.directions.v5.models.RouteLeg;
+import com.mapbox.geojson.Geometry;
 import com.mapbox.geojson.Point;
+import com.mapbox.geojson.gson.GeometryGeoJson;
+import com.mapbox.geojson.utils.PolylineUtils;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -68,7 +79,7 @@ public class SpecificRouteFragment extends Fragment implements OnMapReadyCallbac
     private SpecificRouteViewModel specificRouteViewModel;
     private MapView hikeMapView;
     private MapboxMap mapboxMap;
-    private Hike specificHike;
+    private MutableLiveData<Hike> specificHike;
     private TextView specificHikeTime;
     private ImageView deleteHike;
     private MutableLiveData<Integer> timeValue;
@@ -85,9 +96,12 @@ public class SpecificRouteFragment extends Fragment implements OnMapReadyCallbac
                 ViewGroup container, Bundle savedInstanceState) {
         Mapbox.getInstance(getContext(), getString(R.string.mapbox_access_token));
         specificRouteViewModel = new ViewModelProvider(this).get(SpecificRouteViewModel.class);
+        specificHike = new MutableLiveData<>();
         timeValue = new MutableLiveData<>();
         timeValue.setValue(1000);
-        
+
+
+
         View root = inflater.inflate(R.layout.fragment_specificroute, container, false);
         TextView hikeNameTextView = root.findViewById(R.id.specificHikeName);
         TextView hikeDescriptionTextView = root.findViewById(R.id.specificHikeDescription);
@@ -105,13 +119,14 @@ public class SpecificRouteFragment extends Fragment implements OnMapReadyCallbac
                 hikeNameTextView.setText(hike.getTitle());
                 hikeDescriptionTextView.setText(hike.getDescription());
                 hikeImageImageView.setImageResource(hike.getPictureId());
-                specificHike = hike;
+                specificHike.setValue(hike);
 
             });
 
+
          deleteHike.setOnClickListener(v -> {
-             specificRouteViewModel.deleteHike(specificHike);
-             Toast.makeText(getContext(), "Hike " + specificHike.getTitle() + " Deleted", Toast.LENGTH_LONG).show();
+             specificRouteViewModel.deleteHike(specificHike.getValue());
+             Toast.makeText(getContext(), "Hike " + specificHike.getValue().getTitle() + " Deleted", Toast.LENGTH_LONG).show();
              FragmentTransaction fragmentTransaction = getActivity()
                      .getSupportFragmentManager().beginTransaction();
              RecentFragment fragment = new RecentFragment();
@@ -120,6 +135,7 @@ public class SpecificRouteFragment extends Fragment implements OnMapReadyCallbac
              fragmentTransaction.commit();
          });
 
+         getRouteData();
         return root;
 }
 
@@ -176,11 +192,11 @@ public class SpecificRouteFragment extends Fragment implements OnMapReadyCallbac
                 enableLocationComponent(style);
 
                 addDestinationIconSymbolLayer(style);
-                getRoute(specificHike.hikePointList);
+                getRoute(specificHike.getValue().hikePointList);
 
                 LatLng latlng = new LatLng();
-                latlng.setLatitude(specificHike.hikePointList.get(0).position.latitude());
-                latlng.setLongitude(specificHike.hikePointList.get(0).position.longitude());
+                latlng.setLatitude(specificHike.getValue().hikePointList.get(0).position.latitude());
+                latlng.setLongitude(specificHike.getValue().hikePointList.get(0).position.longitude());
                 timeValue.observe(getViewLifecycleOwner(), new Observer<Integer>() {
                     @Override
                     public void onChanged(Integer integer) {
@@ -298,5 +314,51 @@ public class SpecificRouteFragment extends Fragment implements OnMapReadyCallbac
             Toast.makeText(getContext(), "Permission not granted", Toast.LENGTH_LONG).show();
             //finish();
         }
+    }
+
+    public void getRouteData()
+    {
+        //TESTING
+        OpenRouteServiceApi api = ServiceGenerator.getOpenRouteServiceApi();
+        specificHike.observe(getViewLifecycleOwner(), new Observer<Hike>() {
+            @Override
+            public void onChanged(Hike hike) {
+                String coordinates = specificHike.getValue().getCoordinatesAsString();
+
+                String text = "{\"coordinates\":[" + coordinates + "],\"elevation\":\"true\",\"extra_info\":[\"steepness\",\"waytype\",\"surface\"],\"instructions\":\"false\",\"units\":\"m\"}";
+                RequestBody body =
+                        RequestBody.create(MediaType.parse("text/plain"), text);
+                Call<Root> call = api.getHikeData(body);
+
+                call.enqueue(new Callback<Root>() {
+                    @Override
+                    public void onResponse(Call<Root> call, Response<Root> response) {
+
+                        if (response.code() == 200)
+                        {
+                            for (com.github.detb.trekkie.data.Feature feature : response.body().features
+                            ) {
+                                System.out.println("surface: ");
+                                for (Summary summary:feature.properties.extras.surface.summary
+                                ) {
+                                    System.out.println(summary.getSurfaceTypeAsString());
+                                }
+                                System.out.println("waytype: ");
+                                for (Summary summary:feature.properties.extras.waytypes.summary
+                                ) {
+                                    System.out.println(summary.getWayTypeAsString());
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Root> call, Throwable t) {
+
+                    }
+                });
+            }
+        });
+
     }
 }

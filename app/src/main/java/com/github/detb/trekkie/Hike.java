@@ -12,10 +12,12 @@ import com.google.gson.reflect.TypeToken;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import com.google.firebase.database.IgnoreExtraProperties;
+import com.mapbox.geojson.Point;
 
 @IgnoreExtraProperties
 @Entity(tableName = "hike_table")
@@ -74,6 +76,33 @@ public class Hike implements Serializable {
 
     public List<HikePoint> getHikePointList() {
         return hikePointList;
+    }
+
+    public List<Point> getAllPoints() {
+        List<Point> points = new ArrayList<>();
+        for (HikePoint hikepoint:hikePointList
+             ) {
+            points.add(hikepoint.position);
+        }
+        return points;
+    }
+
+    public String getCoordinatesAsString()
+    {
+        StringBuilder toReturn = new StringBuilder();
+        DecimalFormat df = new DecimalFormat("#.####");
+        List<Point> points = getAllPoints();
+        for (Point point:points
+             ) {
+            toReturn.append('[');
+            toReturn.append(df.format(point.coordinates().get(0)));
+            toReturn.append(',');
+            toReturn.append(df.format(point.coordinates().get(1)));
+            toReturn.append(']');
+            toReturn.append(',');
+        }
+        toReturn.deleteCharAt(toReturn.length()-1);
+        return toReturn.toString();
     }
 
     public void setTitle(String title) {

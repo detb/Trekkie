@@ -114,36 +114,6 @@ public class NewRouteFragment extends Fragment implements OnMapReadyCallback, Vi
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
 
-
-        //TESTING
-        OpenRouteServiceApi api = ServiceGenerator.getOpenRouteServiceApi();
-        String text = "{\"coordinates\":[[8.681495,49.41461],[8.686507,49.41943],[8.687872,49.420318]],\"elevation\":\"true\",\"extra_info\":[\"steepness\",\"waytype\",\"surface\"],\"instructions\":\"false\",\"units\":\"m\"}";
-        RequestBody body =
-                RequestBody.create(MediaType.parse("text/plain"), text);
-        Call<Root> call = api.getHikeData(body);
-        call.enqueue(new Callback<Root>() {
-            @Override
-            public void onResponse(Call<Root> call, Response<Root> response) {
-                if (response.code() == 200)
-                {
-                    for (com.github.detb.trekkie.data.Feature feature : response.body().features
-                         ) {
-                        for (Summary summary:feature.properties.extras.waytypes.summary
-                             ) {
-                            System.out.println(summary.toString());
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Root> call, Throwable t) {
-
-            }
-        });
-
-
-
         addHike.setOnClickListener(v -> {
             Hike hike;
 
