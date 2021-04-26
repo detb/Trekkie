@@ -6,10 +6,19 @@ import android.os.AsyncTask;
 import androidx.lifecycle.LiveData;
 
 import com.github.detb.trekkie.Hike;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class HikeRepository {
+    // Firebase stuff, not working
+    final FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference ref = database.getReference();
+    DatabaseReference hikeRef = ref.child("/hikes");
+
     private HikeDao hikeDao;
     private HikePointDao hikePointDao;
     private static HikeRepository instance;
@@ -28,6 +37,14 @@ public class HikeRepository {
             instance = new HikeRepository(application);
         return instance;
     }
+
+    // Method not working
+    public void saveHikeToFirebase(Hike hike)
+    {
+        hikeRef.setValue("Hey");
+        //hikeRef.setValue(hike);
+    }
+
 
     public LiveData<List<Hike>> getAllHikes(){
         return allHikes;

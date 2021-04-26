@@ -1,27 +1,29 @@
 package com.github.detb.trekkie.ui.newroute;
 
+import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.github.detb.trekkie.Hike;
 import com.github.detb.trekkie.HikePoint;
 import com.github.detb.trekkie.R;
-import com.mapbox.geojson.FeatureCollection;
+import com.github.detb.trekkie.data.Root;
+import com.github.detb.trekkie.data.Summary;
+import com.github.detb.trekkie.db.OpenRouteServiceApi;
+import com.github.detb.trekkie.db.ServiceGenerator;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
-import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
@@ -39,42 +41,36 @@ import com.mapbox.mapboxsdk.location.modes.CameraMode;
 import com.mapbox.geojson.Feature;
 import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.mapbox.mapboxsdk.plugins.annotation.Symbol;
 import com.mapbox.mapboxsdk.plugins.annotation.SymbolManager;
-import com.mapbox.mapboxsdk.plugins.annotation.SymbolOptions;
 import com.mapbox.mapboxsdk.style.layers.SymbolLayer;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 
-import static com.mapbox.mapboxsdk.style.layers.Property.ICON_ROTATION_ALIGNMENT_VIEWPORT;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconAllowOverlap;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconIgnorePlacement;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconImage;
 
 // classes to calculate a route
-import com.mapbox.services.android.navigation.ui.v5.NavigationLauncherOptions;
 import com.mapbox.services.android.navigation.ui.v5.route.NavigationMapRoute;
 import com.mapbox.services.android.navigation.v5.navigation.MapboxNavigation;
-import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute;
-import com.mapbox.api.directions.v5.models.DirectionsResponse;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
+
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import android.util.Log;
 
 
 // classes needed to launch navigation UI
-import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-
-import com.mapbox.services.android.navigation.ui.v5.NavigationLauncher;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class NewRouteFragment extends Fragment implements OnMapReadyCallback, View.OnClickListener, MapboxMap.OnMapClickListener, PermissionsListener {
+
 
     private MapView mapView;
     private MapboxMap mapboxMap;
@@ -106,6 +102,7 @@ public class NewRouteFragment extends Fragment implements OnMapReadyCallback, Vi
         View root = inflater.inflate(R.layout.fragment_newroute, container, false);
 
         pointDescriptionEditText = root.findViewById(R.id.point_description);
+        pointDescriptionEditText.setHint("Description of specific point");
         pointDescriptionEditText.setOnClickListener(this);
 
         addPoint = root.findViewById(R.id.addPoint);
@@ -113,24 +110,61 @@ public class NewRouteFragment extends Fragment implements OnMapReadyCallback, Vi
 
         addHike = root.findViewById(R.id.addHike);
 
-
         mapView = root.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
 
 
+        //TESTING
+        OpenRouteServiceApi api = ServiceGenerator.getOpenRouteServiceApi();
+        String text = "{\"coordinates\":[[8.681495,49.41461],[8.686507,49.41943],[8.687872,49.420318]],\"elevation\":\"true\",\"extra_info\":[\"steepness\",\"waytype\",\"surface\"],\"instructions\":\"false\",\"units\":\"m\"}";
+        RequestBody body =
+                RequestBody.create(MediaType.parse("text/plain"), text);
+        Call<Root> call = api.getHikeData(body);
+        call.enqueue(new Callback<Root>() {
+            @Override
+            public void onResponse(Call<Root> call, Response<Root> response) {
+                if (response.code() == 200)
+                {
+                    for (com.github.detb.trekkie.data.Feature feature : response.body().features
+                         ) {
+                        for (Summary summary:feature.properties.extras.waytypes.summary
+                             ) {
+                            System.out.println(summary.toString());
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Root> call, Throwable t) {
+
+            }
+        });
+
+
+
         addHike.setOnClickListener(v -> {
             Hike hike;
+
             String nameOfHike = ((EditText)root.findViewById(R.id.hike_name_string)).getText().toString();
             String descriptionOfHike = ((EditText)root.findViewById(R.id.hike_description_string)).getText().toString();
 
-            hike = new Hike(nameOfHike, descriptionOfHike,R.drawable.defaulthike, hikePoints);
-            newRouteViewModel.pushHikeToDb(hike);
+            if(TextUtils.isEmpty(nameOfHike)){
+                Toast.makeText(getContext(),"Please give your hike a name",Toast.LENGTH_LONG).show();
+            }
+            if(TextUtils.isEmpty(descriptionOfHike)){
+                Toast.makeText(getContext(),"Please give your hike a description",Toast.LENGTH_LONG).show();
+            }
+            else {
+                hike = new Hike(nameOfHike, descriptionOfHike, R.drawable.defaulthike, hikePoints);
+                newRouteViewModel.pushHikeToDb(hike);
 
-            Toast.makeText(getContext(), "Hike Added", Toast.LENGTH_SHORT).show();
-            mapboxMap.clear();
-            ((EditText)root.findViewById(R.id.hike_name_string)).getText().clear();
-            ((EditText)root.findViewById(R.id.hike_description_string)).getText().clear();
+                Toast.makeText(getContext(), "Hike Added", Toast.LENGTH_SHORT).show();
+                mapboxMap.clear();
+                ((EditText) root.findViewById(R.id.hike_name_string)).getText().clear();
+                ((EditText) root.findViewById(R.id.hike_description_string)).getText().clear();
+            }
         });
         return root;
     }
@@ -240,6 +274,8 @@ public class NewRouteFragment extends Fragment implements OnMapReadyCallback, Vi
                 hikePoints.add(new HikePoint(pointToAdd, pointDescriptionEditText.getText().toString()));
                 pointDescriptionEditText.getText().clear();
                 Toast.makeText(getContext(), "Point added", Toast.LENGTH_SHORT).show();
+                addHike.setEnabled(true);
+                closeKeyboard();
             }
         });
 
@@ -325,5 +361,13 @@ public class NewRouteFragment extends Fragment implements OnMapReadyCallback, Vi
     @Override
     public void onClick(View v) {
         pointDescriptionEditText.setText("");
+    }
+
+    private void closeKeyboard()
+    {
+        InputMethodManager inputManager = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
+                InputMethodManager.HIDE_NOT_ALWAYS);
+
     }
 }

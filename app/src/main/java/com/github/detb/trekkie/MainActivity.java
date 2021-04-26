@@ -14,6 +14,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.github.detb.trekkie.db.OpenRouteServiceApi;
+import com.github.detb.trekkie.db.ServiceGenerator;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
@@ -32,6 +34,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -57,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
         logoutButton = navigationView.getHeaderView(0).findViewById(R.id.logoutButton);
 
+
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
@@ -81,11 +88,15 @@ public class MainActivity extends AppCompatActivity {
                TextView usernameTextView = navigationView.getHeaderView(0).findViewById(R.id.trekkie_username);
                TextView emailTextView = navigationView.getHeaderView(0).findViewById(R.id.trekkie_email);
                ImageView pictureImageView = navigationView.getHeaderView(0).findViewById(R.id.profile_picture);
-               Glide.with(getApplicationContext()).load(user.getPhotoUrl().toString())
-                       .apply(new RequestOptions().override(200,200))
-                       .diskCacheStrategy(DiskCacheStrategy.ALL)
-                       .into(pictureImageView);
-               pictureImageView.setImageURI(user.getPhotoUrl());
+               if (user.getPhotoUrl() != null) {
+                   Glide.with(getApplicationContext()).load(user.getPhotoUrl().toString())
+                           .apply(new RequestOptions().override(200, 200))
+                           .diskCacheStrategy(DiskCacheStrategy.ALL)
+                           .into(pictureImageView);
+                   pictureImageView.setImageURI(user.getPhotoUrl());
+               }
+               else
+                   pictureImageView.setImageResource(R.drawable.ic_default_profile_picture);
                usernameTextView.setText(user.getDisplayName());
                emailTextView.setText(user.getEmail());
                 String message = "Welcome " + user.getDisplayName();

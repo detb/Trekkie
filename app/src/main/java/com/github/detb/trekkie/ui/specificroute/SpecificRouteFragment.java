@@ -20,6 +20,9 @@ import retrofit2.Response;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.github.detb.trekkie.Hike;
@@ -59,6 +62,8 @@ import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconAllowOverlap
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconIgnorePlacement;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconImage;
 
+
+
 public class SpecificRouteFragment extends Fragment implements OnMapReadyCallback, PermissionsListener {
     private SpecificRouteViewModel specificRouteViewModel;
     private MapView hikeMapView;
@@ -66,7 +71,7 @@ public class SpecificRouteFragment extends Fragment implements OnMapReadyCallbac
     private Hike specificHike;
     private TextView specificHikeTime;
     private ImageView deleteHike;
-    private long timeValue = 1000;
+    private MutableLiveData<Integer> timeValue;
 
     // variables for adding location layer
     private PermissionsManager permissionsManager;
@@ -80,7 +85,9 @@ public class SpecificRouteFragment extends Fragment implements OnMapReadyCallbac
                 ViewGroup container, Bundle savedInstanceState) {
         Mapbox.getInstance(getContext(), getString(R.string.mapbox_access_token));
         specificRouteViewModel = new ViewModelProvider(this).get(SpecificRouteViewModel.class);
-
+        timeValue = new MutableLiveData<>();
+        timeValue.setValue(1000);
+        
         View root = inflater.inflate(R.layout.fragment_specificroute, container, false);
         TextView hikeNameTextView = root.findViewById(R.id.specificHikeName);
         TextView hikeDescriptionTextView = root.findViewById(R.id.specificHikeDescription);
@@ -174,7 +181,12 @@ public class SpecificRouteFragment extends Fragment implements OnMapReadyCallbac
                 LatLng latlng = new LatLng();
                 latlng.setLatitude(specificHike.hikePointList.get(0).position.latitude());
                 latlng.setLongitude(specificHike.hikePointList.get(0).position.longitude());
-                mapboxMap.setCameraPosition(new CameraPosition.Builder().target(latlng).zoom(8).build());
+                timeValue.observe(getViewLifecycleOwner(), new Observer<Integer>() {
+                    @Override
+                    public void onChanged(Integer integer) {
+                        mapboxMap.setCameraPosition(new CameraPosition.Builder().target(latlng).zoom(timeValue.getValue() / 9).build());
+                    }
+                });
             }
         });
 
@@ -213,8 +225,8 @@ public class SpecificRouteFragment extends Fragment implements OnMapReadyCallbac
                         } else {
                             navigationMapRoute = new NavigationMapRoute(null, hikeMapView, mapboxMap, R.style.NavigationLocationLayerStyle);
 
-                            timeValue = TimeUnit.SECONDS.toMinutes(currentRoute.duration().longValue()); // Doesn't update the value in time for onmapready
-                            specificHikeTime.setText(timeValue + " minutes");
+                            timeValue.setValue((int) TimeUnit.SECONDS.toMinutes(currentRoute.duration().longValue())); // Doesn't update the value in time for onmapready
+                            specificHikeTime.setText(timeValue.getValue() + " minutes");
                         }
                         navigationMapRoute.addRoute(currentRoute);
                     }

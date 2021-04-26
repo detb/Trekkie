@@ -10,13 +10,16 @@ import androidx.room.TypeConverters;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import com.google.firebase.database.IgnoreExtraProperties;
 
+@IgnoreExtraProperties
 @Entity(tableName = "hike_table")
-public class Hike {
+public class Hike implements Serializable {
 
     @Ignore
     private static Gson gson = new Gson();

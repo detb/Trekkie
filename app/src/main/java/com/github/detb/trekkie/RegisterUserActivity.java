@@ -1,8 +1,11 @@
 package com.github.detb.trekkie;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,7 +24,7 @@ import com.google.firebase.auth.FirebaseUser;
 public class RegisterUserActivity extends AppCompatActivity{
     private RegisterUserViewModel viewModel;
     private FirebaseAuth mAuth;
-    private TextView email, password;
+    private EditText signUpMail, signUpPass;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,28 +33,39 @@ public class RegisterUserActivity extends AppCompatActivity{
         setContentView(R.layout.register_activity);
         mAuth = FirebaseAuth.getInstance();
 
-        email = findViewById(R.id.email);
-        password = findViewById(R.id.password);
+        signUpMail = findViewById(R.id.EmailAddress);
+        signUpPass = findViewById(R.id.TextPassword);
+
     }
 
     public void createUser(View v){
-        mAuth.createUserWithEmailAndPassword(email.toString(),password.toString())
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            //Log.d(TAG, "createUserWithEmail:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            //updateUI(user);
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            //Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(RegisterUserActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                            //updateUI(null);
+        String email = signUpMail.getText().toString();
+        String pass = signUpPass.getText().toString();
+
+        if(TextUtils.isEmpty(email)){
+            Toast.makeText(getApplicationContext(),"Please enter your E-mail address",Toast.LENGTH_LONG).show();
+            return;
+        }
+        if(TextUtils.isEmpty(pass)){
+            Toast.makeText(getApplicationContext(),"Please enter your Password",Toast.LENGTH_LONG).show();
+        }
+        if (pass.length() == 0){
+            Toast.makeText(getApplicationContext(),"Please enter your Password",Toast.LENGTH_LONG).show();
+        }
+        if (pass.length()<8){
+            Toast.makeText(getApplicationContext(),"Password must be more than 8 digit",Toast.LENGTH_LONG).show();
+        }
+        else{
+            mAuth.createUserWithEmailAndPassword(email,pass)
+                    .addOnCompleteListener(RegisterUserActivity.this, task -> {
+
+                        if (!task.isSuccessful()) {
+                            Toast.makeText(RegisterUserActivity.this, "ERROR",Toast.LENGTH_LONG).show();
                         }
-                    }
-                });
+                        else {
+                            startActivity(new Intent(RegisterUserActivity.this, SignInActivity.class));
+                            finish();
+                        }
+                    });}
     }
 }

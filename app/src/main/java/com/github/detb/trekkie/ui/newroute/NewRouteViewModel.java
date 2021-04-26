@@ -30,6 +30,7 @@ public class NewRouteViewModel extends AndroidViewModel {
     }
 
     public void pushHikeToDb(Hike hikeData){
+        // hikeRepository.saveHikeToFirebase(hikeData); NOT WORKING
         hikeRepository.insert(hikeData);
     }
 }
