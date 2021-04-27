@@ -19,7 +19,7 @@ import java.util.List;
 public class HikePoint {
 
     @Ignore
-    private static Gson gson = new Gson();
+    private static final Gson gson = new Gson();
 
     @PrimaryKey(autoGenerate = true)
     private int id;

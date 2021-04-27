@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public class HikeAdapter extends RecyclerView.Adapter<HikeAdapter.ViewHolder> {
 
-    private ArrayList<Hike> hikes;
+    private final ArrayList<Hike> hikes;
     final private OnListItemClickListener mOnListItemClickListener;
 
     public HikeAdapter(ArrayList<Hike> hikes, OnListItemClickListener listener) {

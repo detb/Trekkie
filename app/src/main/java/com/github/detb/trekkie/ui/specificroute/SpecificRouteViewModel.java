@@ -11,7 +11,7 @@ import com.github.detb.trekkie.db.HikeRepository;
 
 public class SpecificRouteViewModel extends AndroidViewModel {
 
-    private HikeRepository repository;
+    private final HikeRepository repository;
 
     public SpecificRouteViewModel(@NonNull Application application) {
         super(application);

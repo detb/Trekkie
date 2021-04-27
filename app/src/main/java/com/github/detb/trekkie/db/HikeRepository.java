@@ -19,10 +19,10 @@ public class HikeRepository {
     DatabaseReference ref = database.getReference();
     DatabaseReference hikeRef = ref.child("/hikes");
 
-    private HikeDao hikeDao;
-    private HikePointDao hikePointDao;
+    private final HikeDao hikeDao;
+    private final HikePointDao hikePointDao;
     private static HikeRepository instance;
-    private LiveData<List<Hike>> allHikes;
+    private final LiveData<List<Hike>> allHikes;
 
     private HikeRepository(Application application)
     {
@@ -61,7 +61,7 @@ public class HikeRepository {
     }
 
     private static class InsertHikeAsync extends AsyncTask<Hike, Void, Void> {
-        private HikeDao hikeDao;
+        private final HikeDao hikeDao;
 
         private InsertHikeAsync(HikeDao hikeDao){
             this.hikeDao = hikeDao;
@@ -80,7 +80,7 @@ public class HikeRepository {
     }
 
     private static class DeleteHikeAsync extends AsyncTask<Hike, Void, Void> {
-        private HikeDao hikeDao;
+        private final HikeDao hikeDao;
 
         private DeleteHikeAsync(HikeDao hikeDao) {this.hikeDao = hikeDao;}
 

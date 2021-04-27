@@ -24,7 +24,7 @@ import com.mapbox.geojson.Point;
 public class Hike implements Serializable {
 
     @Ignore
-    private static Gson gson = new Gson();
+    private static final Gson gson = new Gson();
 
     public void setId(int id) {
         this.id = id;
