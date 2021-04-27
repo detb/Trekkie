@@ -78,16 +78,12 @@ public class NewRouteFragment extends Fragment implements OnMapReadyCallback, Vi
     // variables for adding location layer
     private PermissionsManager permissionsManager;
     private LocationComponent locationComponent;
-    // variables for calculating and drawing a route
-    private DirectionsRoute currentRoute;
-    private static final String TAG = "DirectionsActivity";
-    private NavigationMapRoute navigationMapRoute;
-    private MapboxNavigation mapboxNavigation;
+
     // variables needed to initialize navigation
     private Button addPoint;
     private Button addHike;
     private EditText pointDescriptionEditText;
-    private SymbolManager symbolManager;
+
     private final List<HikePoint> hikePoints = new ArrayList<>();
 
     private NewRouteViewModel newRouteViewModel;
@@ -102,7 +98,7 @@ public class NewRouteFragment extends Fragment implements OnMapReadyCallback, Vi
         View root = inflater.inflate(R.layout.fragment_newroute, container, false);
 
         pointDescriptionEditText = root.findViewById(R.id.point_description);
-        pointDescriptionEditText.setHint("Description of specific point");
+        pointDescriptionEditText.setHint("Description of specific pointDescription of specific point");
         pointDescriptionEditText.setOnClickListener(this);
 
         addPoint = root.findViewById(R.id.addPoint);
@@ -191,23 +187,11 @@ public class NewRouteFragment extends Fragment implements OnMapReadyCallback, Vi
 
                 addDestinationIconSymbolLayer(style);
                 mapboxMap.addOnMapClickListener(NewRouteFragment.this);
-
-//                button.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        boolean simulateRoute = true;
-//                        NavigationLauncherOptions options = NavigationLauncherOptions.builder()
-//                                .directionsRoute(currentRoute)
-//                                .shouldSimulateRoute(simulateRoute)
-//                                .build();
-//// Call this method with Context from within an Activity
-//                        NavigationLauncher.startNavigation(getActivity(), options);
-//                    }
-//                });
             }
         });
         mapboxMap.setCameraPosition(new CameraPosition.Builder().zoom(10).build());
     }
+
     private void addDestinationIconSymbolLayer(@NonNull Style loadedMapStyle) {
         loadedMapStyle.addImage("destination-icon-id",
                 BitmapFactory.decodeResource(this.getResources(), R.drawable.mapbox_marker_icon_default));
@@ -252,50 +236,12 @@ public class NewRouteFragment extends Fragment implements OnMapReadyCallback, Vi
         return true;
     }
 
-//    private void getRoute(Point origin, Point destination) {
-//        NavigationRoute.builder(getContext())
-//                .accessToken(Mapbox.getAccessToken())
-//                .origin(origin)
-//                .destination(destination)
-//                .build()
-//                .getRoute(new Callback<DirectionsResponse>() {
-//                    @Override
-//                    public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
-//// You can get the generic HTTP info about the response
-//                        Log.d(TAG, "Response code: " + response.code());
-//                        if (response.body() == null) {
-//                            Log.e(TAG, "No routes found, make sure you set the right user and access token.");
-//                            return;
-//                        } else if (response.body().routes().size() < 1) {
-//                            Log.e(TAG, "No routes found");
-//                            return;
-//                        }
-//
-//                        currentRoute = response.body().routes().get(0);
-//
-//// Draw the route on the map
-//                        if (navigationMapRoute != null) {
-//                            navigationMapRoute.removeRoute();
-//                        } else {
-//                            navigationMapRoute = new NavigationMapRoute(null, mapView, mapboxMap, R.style.NavigationLocationLayerStyle);
-//                        }
-//                        navigationMapRoute.addRoute(currentRoute);
-//                    }
-//
-//                    @Override
-//                    public void onFailure(Call<DirectionsResponse> call, Throwable throwable) {
-//                        Log.e(TAG, "Error: " + throwable.getMessage());
-//                    }
-//                });
-//    }
-//
-
     @SuppressWarnings( {"MissingPermission"})
     private void enableLocationComponent(@NonNull Style loadedMapStyle) {
-// Check if permissions are enabled and if not request
+        // Check if permissions are enabled and if not request
         if (PermissionsManager.areLocationPermissionsGranted(getContext())) {
-// Activate the MapboxMap LocationComponent to show user location
-// Adding in LocationComponentOptions is also an optional parameter
+            // Activate the MapboxMap LocationComponent to show user location
+            // Adding in LocationComponentOptions is also an optional parameter
             locationComponent = mapboxMap.getLocationComponent();
             locationComponent.activateLocationComponent(getContext(), loadedMapStyle);
             locationComponent.setLocationComponentEnabled(true);

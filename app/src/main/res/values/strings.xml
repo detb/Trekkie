@@ -8,7 +8,8 @@
     <string name="action_settings">Settings</string>
     <string name="mapbox_access_token">pk.eyJ1IjoibWVzdGVyYiIsImEiOiJja21rbTM1ajIweGl5MzBta20wY2VjNzRqIn0.UrJ-xzpqzli16UB6sSGrEw</string>
     <string name="ors_access_token">5b3ce3597851110001cf6248b6552a0ab51f469f874a2253c22d11c2</string>
-    <string name="menu_recent">My Recent Hikes</string>
-    <string name="menu_newroute">New Route</string>
-    <string name="menu_myroutes">My Routes</string>
+    <string name="menu_recent">My Hikes</string>
+    <string name="menu_newroute">New Hike</string>
+    <string name="menu_myroutes">My Friends Hikes</string>
+    <string name="menu_logout">sign out</string>
 </resources>

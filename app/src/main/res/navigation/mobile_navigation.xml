@@ -7,9 +7,9 @@
 
     <fragment
         android:id="@+id/nav_home"
-        android:name="com.github.detb.trekkie.ui.home.RecentFragment"
+        android:name="com.github.detb.trekkie.ui.home.HomeFragment"
         android:label="@string/menu_recent"
-        tools:layout="@layout/fragment_myrecenthikes" />
+        tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/nav_newroute"
@@ -19,7 +19,7 @@
 
     <fragment
         android:id="@+id/nav_myroutes"
-        android:name="com.github.detb.trekkie.ui.myroutes.MyRoutesFragment"
+        android:name="com.github.detb.trekkie.ui.myfriendshikes.MyFriendsHikes"
         android:label="@string/menu_myroutes"
-        tools:layout="@layout/fragment_myroutes" />
+        tools:layout="@layout/fragment_myfriendshikes" />
 </navigation>

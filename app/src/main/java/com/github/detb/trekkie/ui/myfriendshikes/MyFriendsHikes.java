@@ -1,4 +1,4 @@
-package com.github.detb.trekkie.ui.myroutes;
+package com.github.detb.trekkie.ui.myfriendshikes;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,15 +16,15 @@ import com.github.detb.trekkie.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
-public class MyRoutesFragment extends Fragment {
+public class MyFriendsHikes extends Fragment {
 
-    private MyRoutesViewModel myRoutesViewModel;
+    private MyFriendsHikesViewModel myFriendsHikesViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        myRoutesViewModel =
-                new ViewModelProvider(this).get(MyRoutesViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_myroutes, container, false);
+        myFriendsHikesViewModel =
+                new ViewModelProvider(this).get(MyFriendsHikesViewModel.class);
+        View root = inflater.inflate(R.layout.fragment_myfriendshikes, container, false);
         final TextView textView = root.findViewById(R.id.text_slideshow);
 
 
@@ -37,7 +37,7 @@ public class MyRoutesFragment extends Fragment {
             }
         });
 
-        myRoutesViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+        myFriendsHikesViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 textView.setText(s);

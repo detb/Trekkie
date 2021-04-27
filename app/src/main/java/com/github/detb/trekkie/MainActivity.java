@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
     private MainActivityViewModel viewModel;
     private NavigationView navigationView;
-    private Button logoutButton;
+    private TextView signout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,9 +60,13 @@ public class MainActivity extends AppCompatActivity {
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
-
-        logoutButton = navigationView.getHeaderView(0).findViewById(R.id.logoutButton);
-
+        signout = findViewById(R.id.logout);
+        signout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewModel.signOut();
+            }
+        });
 
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -74,12 +78,6 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-        logoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewModel.signOut();
-            }
-        });
     }
 
     private void checkIfSignedIn() {
@@ -99,7 +97,6 @@ public class MainActivity extends AppCompatActivity {
                    pictureImageView.setImageResource(R.drawable.ic_default_profile_picture);
                usernameTextView.setText(user.getDisplayName());
                emailTextView.setText(user.getEmail());
-                String message = "Welcome " + user.getDisplayName();
             } else
                 startLoginActivity();
         });
