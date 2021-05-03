@@ -6,9 +6,11 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +21,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import androidx.annotation.NonNull;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.MutableLiveData;
@@ -38,6 +41,7 @@ import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.api.directions.v5.DirectionsCriteria;
 import com.mapbox.api.directions.v5.models.DirectionsResponse;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
+import com.mapbox.api.directions.v5.models.RouteOptions;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -53,7 +57,12 @@ import com.mapbox.mapboxsdk.style.layers.SymbolLayer;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 import com.mapbox.services.android.navigation.ui.v5.route.NavigationMapRoute;
 import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute;
+import com.mapbox.services.android.navigation.v5.navigation.NavigationWalkingOptions;
 
+import org.eazegraph.lib.charts.PieChart;
+import org.eazegraph.lib.models.PieModel;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -66,11 +75,13 @@ import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconImage;
 
 public class SpecificRouteFragment extends Fragment implements OnMapReadyCallback, PermissionsListener {
     private SpecificRouteViewModel specificRouteViewModel;
+    private NestedScrollView specificScrollView;
     private MapView hikeMapView;
     private MapboxMap mapboxMap;
     private MutableLiveData<Hike> specificHike;
     private TextView specificHikeTime;
     private ImageView deleteHike;
+    private PieChart pieChart;
     private MutableLiveData<Integer> timeValue;
 
     // variables for adding location layer
@@ -81,8 +92,11 @@ public class SpecificRouteFragment extends Fragment implements OnMapReadyCallbac
     private DirectionsRoute currentRoute;
     private NavigationMapRoute navigationMapRoute;
 
+    private MutableLiveData<List<Summary>> waytypeSummaryList;
+
+    @SuppressLint("ClickableViewAccessibility")
     public View onCreateView(@NonNull LayoutInflater inflater,
-                ViewGroup container, Bundle savedInstanceState) {
+                             ViewGroup container, Bundle savedInstanceState) {
         Mapbox.getInstance(getContext(), getString(R.string.mapbox_access_token));
         specificRouteViewModel = new ViewModelProvider(this).get(SpecificRouteViewModel.class);
         specificHike = new MutableLiveData<>();
@@ -94,10 +108,35 @@ public class SpecificRouteFragment extends Fragment implements OnMapReadyCallbac
         TextView hikeDescriptionTextView = root.findViewById(R.id.specificHikeDescription);
         ImageView hikeImageImageView = root.findViewById(R.id.specificHikePicture);
         deleteHike = root.findViewById(R.id.delete_hike);
+        specificScrollView = root.findViewById(R.id.specificHikeScrollView);
+        pieChart = root.findViewById(R.id.piechart);
 
         specificHikeTime = root.findViewById(R.id.specificHikeTime);
         hikeMapView = root.findViewById(R.id.specificHikeMapView);
         hikeMapView.onCreate(savedInstanceState);
+
+        // Making pie chart explanations disappear
+        root.findViewById(R.id.RoadLL).setVisibility(View.GONE);
+        root.findViewById(R.id.StreetLL).setVisibility(View.GONE);
+        root.findViewById(R.id.PathLL).setVisibility(View.GONE);
+        root.findViewById(R.id.TrackLL).setVisibility(View.GONE);
+        root.findViewById(R.id.FootwayLL).setVisibility(View.GONE);
+        root.findViewById(R.id.OMLL).setVisibility(View.GONE);
+
+        // Necessary to disable scrollview while moving on the map
+        hikeMapView.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_MOVE:
+                    specificScrollView.requestDisallowInterceptTouchEvent(true);
+                    break;
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    specificScrollView.requestDisallowInterceptTouchEvent(false);
+                    break;
+            }
+            return hikeMapView.onTouchEvent(event);
+        });
+
         hikeMapView.getMapAsync(this);
 
             int hikeId = this.getArguments().getInt("HikeId");
@@ -121,6 +160,9 @@ public class SpecificRouteFragment extends Fragment implements OnMapReadyCallbac
              fragmentTransaction.addToBackStack( "tag" );
              fragmentTransaction.commit();
          });
+
+         List<Summary> summaries = new ArrayList<>();
+         waytypeSummaryList = new MutableLiveData<>(summaries);
 
          getRouteData();
         return root;
@@ -202,6 +244,7 @@ public class SpecificRouteFragment extends Fragment implements OnMapReadyCallbac
                 ) {
                navRouteBuilder.addWaypoint(hikePoint.position);
            }
+
             navRouteBuilder.build().getRoute(new Callback<DirectionsResponse>() {
                     @SuppressLint("SetTextI18n")
                     @Override
@@ -298,6 +341,97 @@ public class SpecificRouteFragment extends Fragment implements OnMapReadyCallbac
         }
     }
 
+    private void createPieChart()
+    {
+        System.out.println("pie chart");
+
+        //pieChart.addPieSlice(
+        //        new PieModel(
+        //                "Road",
+        //                20,
+        //                Color.parseColor("#232323")));
+        //pieChart.addPieSlice(
+        //        new PieModel(
+        //                "Street",
+        //                10,
+        //                Color.parseColor("#6C6C6C")));
+        //pieChart.addPieSlice(
+        //        new PieModel(
+        //                "Path",
+        //                10,
+        //                Color.parseColor("#805312")));
+        //pieChart.addPieSlice(
+        //        new PieModel(
+        //                "Track",
+        //                20,
+        //                Color.parseColor("#FF470E")));
+        //pieChart.addPieSlice(
+        //        new PieModel(
+        //                "Footway",
+        //                20,
+        //                Color.parseColor("#005E04")));
+        //pieChart.addPieSlice(
+        //        new PieModel(
+        //                "Other/Mixed",
+        //                20,
+        //                Color.parseColor("#4863F4")));
+//
+        //pieChart.startAnimation();
+
+
+        waytypeSummaryList.observe(getViewLifecycleOwner(), new Observer<List<Summary>>() {
+            @Override
+            public void onChanged(List<Summary> summaries) {
+                for (Summary summary : summaries){
+                    System.out.println("test " + summary.getWayTypeAsString());
+                    summary.getWayTypeAsString();
+                    TextView toEdit;
+
+                    switch (summary.getWayTypeAsString()) {
+                        case "Unknown":
+                        case "State Road":
+                        case "Cycleway":
+                        case "Steps":
+                        case "Ferry":
+                        case "Construction":
+                            toEdit = getView().findViewById(R.id.OM);
+                            getView().findViewById(R.id.OMLL).setVisibility(View.VISIBLE); break;
+                        case "Road":
+                            toEdit = getView().findViewById(R.id.Road);
+                            getView().findViewById(R.id.RoadLL).setVisibility(View.VISIBLE); break;
+                        case "Street":
+                            toEdit = getView().findViewById(R.id.Street);
+                            getView().findViewById(R.id.StreetLL).setVisibility(View.VISIBLE); break;
+                        case "Path":
+                            toEdit = getView().findViewById(R.id.Path);
+                            getView().findViewById(R.id.PathLL).setVisibility(View.VISIBLE); break;
+                        case "Track":
+                            toEdit = getView().findViewById(R.id.Track);
+                            getView().findViewById(R.id.TrackLL).setVisibility(View.VISIBLE); break;
+                        case "Footway":
+                            toEdit = getView().findViewById(R.id.Footway);
+                            getView().findViewById(R.id.FootwayLL).setVisibility(View.VISIBLE); break;
+
+                        default:
+                            throw new IllegalStateException("Unexpected value: " + summary.getWayTypeAsString());
+                    }
+
+                    String toSet = summary.getWayTypeAsString() + " " + summary.getWayTypeAmountPercentage();
+                    toEdit.setText(toSet);
+
+                    pieChart.addPieSlice(
+                            new PieModel(
+                                    summary.getWayTypeAsString(),
+                                    (float)summary.getWayTypeAmount(),
+                                    Color.parseColor(summary.getColorString())));
+                }
+                pieChart.startAnimation();
+            }
+        });
+    }
+
+
+
     public void getRouteData()
     {
         //TESTING
@@ -323,13 +457,10 @@ public class SpecificRouteFragment extends Fragment implements OnMapReadyCallbac
                                 System.out.println("surface: ");
                                 for (Summary summary:feature.properties.extras.surface.summary
                                 ) {
-                                    System.out.println(summary.getSurfaceTypeAsString());
+
                                 }
                                 System.out.println("waytype: ");
-                                for (Summary summary:feature.properties.extras.waytypes.summary
-                                ) {
-                                    System.out.println(summary.getWayTypeAsString());
-                                }
+                                waytypeSummaryList.postValue(new ArrayList<>(feature.properties.extras.waytypes.summary));
                             }
                         }
                     }
@@ -339,8 +470,9 @@ public class SpecificRouteFragment extends Fragment implements OnMapReadyCallbac
 
                     }
                 });
+
             }
         });
-
+        createPieChart();
     }
 }

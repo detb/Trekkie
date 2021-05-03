@@ -86,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
                TextView usernameTextView = navigationView.getHeaderView(0).findViewById(R.id.trekkie_username);
                TextView emailTextView = navigationView.getHeaderView(0).findViewById(R.id.trekkie_email);
                ImageView pictureImageView = navigationView.getHeaderView(0).findViewById(R.id.profile_picture);
+               viewModel.setUserForHikeFirebaseRepository(user);
                if (user.getPhotoUrl() != null) {
                    Glide.with(getApplicationContext()).load(user.getPhotoUrl().toString())
                            .apply(new RequestOptions().override(200, 200))

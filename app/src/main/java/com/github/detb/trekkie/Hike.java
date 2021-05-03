@@ -1,7 +1,6 @@
 package com.github.detb.trekkie;
 
 import androidx.room.Entity;
-import androidx.room.ForeignKey;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverter;
@@ -25,6 +24,7 @@ public class Hike implements Serializable {
 
     @Ignore
     private static final Gson gson = new Gson();
+
 
     public void setId(int id) {
         this.id = id;
@@ -67,6 +67,34 @@ public class Hike implements Serializable {
         this.title = title;
         this.description = description;
         this.pictureId = pictureId;
+    }
+
+    public Hike(Hike hike) {
+        this.id = hike.getId();
+        this.description = hike.getDescription();
+        this.pictureId = hike.getPictureId();
+        this.title = hike.getTitle();
+        this.hikePointList.addAll(hike.hikePointList);
+    }
+
+    public Hike(HikeFirebase hikeFirebase)
+    {
+        this.description = hikeFirebase.getDescription();
+        this.pictureId = hikeFirebase.getPictureId();
+        this.title = hikeFirebase.getTitle();
+        List<HikePoint> points = stringToHikePointList(hikeFirebase.getJsonHikePoints());
+        this.hikePointList.addAll(points);
+    }
+
+    @Override
+    public String toString() {
+        return "Hike{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", pictureId=" + pictureId +
+                ", hikePointList=" + hikePointList +
+                '}';
     }
 
     public void addHikePoint(HikePoint hikePoint)
@@ -132,4 +160,16 @@ public class Hike implements Serializable {
     public int getPictureId() {
         return pictureId;
     }
+
+    public HikeFirebase getHikeAsHikeFirebase()
+    {
+        HikeFirebase hikeFirebase = new HikeFirebase();
+        hikeFirebase.setDescription(this.description);
+        hikeFirebase.setPictureId(this.pictureId);
+        hikeFirebase.setTitle(this.title);
+        hikeFirebase.setJsonHikePoints(hikePointListToString(this.hikePointList));
+
+        return hikeFirebase;
+    }
+
 }

@@ -12,6 +12,7 @@ import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.github.detb.trekkie.Hike;
@@ -21,6 +22,8 @@ import com.github.detb.trekkie.data.Root;
 import com.github.detb.trekkie.data.Summary;
 import com.github.detb.trekkie.db.OpenRouteServiceApi;
 import com.github.detb.trekkie.db.ServiceGenerator;
+import com.github.detb.trekkie.ui.home.HomeFragment;
+import com.github.detb.trekkie.ui.specificroute.SpecificRouteFragment;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
@@ -98,7 +101,6 @@ public class NewRouteFragment extends Fragment implements OnMapReadyCallback, Vi
         View root = inflater.inflate(R.layout.fragment_newroute, container, false);
 
         pointDescriptionEditText = root.findViewById(R.id.point_description);
-        pointDescriptionEditText.setHint("Description of specific pointDescription of specific point");
         pointDescriptionEditText.setOnClickListener(this);
 
         addPoint = root.findViewById(R.id.addPoint);
@@ -125,7 +127,7 @@ public class NewRouteFragment extends Fragment implements OnMapReadyCallback, Vi
             else {
                 hike = new Hike(nameOfHike, descriptionOfHike, R.drawable.defaulthike, hikePoints);
                 newRouteViewModel.pushHikeToDb(hike);
-
+                // changeFragment();
                 Toast.makeText(getContext(), "Hike Added", Toast.LENGTH_SHORT).show();
                 mapboxMap.clear();
                 ((EditText) root.findViewById(R.id.hike_name_string)).getText().clear();
@@ -285,5 +287,15 @@ public class NewRouteFragment extends Fragment implements OnMapReadyCallback, Vi
         inputManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
                 InputMethodManager.HIDE_NOT_ALWAYS);
 
+    }
+
+    private void changeFragment()
+    {
+        FragmentTransaction fragmentTransaction = getActivity()
+                .getSupportFragmentManager().beginTransaction();
+        HomeFragment fragment = new HomeFragment();
+        fragmentTransaction.replace(R.id.nav_newroute, fragment);
+        fragmentTransaction.addToBackStack( "tag" );
+        fragmentTransaction.commit();
     }
 }

@@ -5,6 +5,16 @@ public class Summary{
     public double amount;
     public double duration;
 
+    public double getWayTypeAmount()
+    {
+        return amount;
+    }
+
+    public String getWayTypeAmountPercentage()
+    {
+        return (float)amount + " %";
+    }
+
     public String getWayTypeAsString()
     {
         switch (value) {
@@ -18,7 +28,7 @@ public class Summary{
             case 7:	return "Footway";
             case 8:	return "Steps";
             case 9: return "Ferry";
-            case 10: return  "Construction";
+            case 10: return "Construction";
         }
         return null;
     }
@@ -58,4 +68,20 @@ public class Summary{
     }
 
 
+    public String getColorString() {
+        switch (value) {
+            case 0: return "#4863F4";
+            case 1:	return "#4863F4";
+            case 2:	return "#232323";
+            case 3:	return "#6C6C6C";
+            case 4:	return "#805312";
+            case 5:	return "#FF470E";
+            case 6:	return "#4863F4";
+            case 7:	return "#005E04";
+            case 8:	return "#4863F4";
+            case 9: return "#4863F4";
+            case 10: return "#4863F4";
+        }
+        return null;
+    }
 }
