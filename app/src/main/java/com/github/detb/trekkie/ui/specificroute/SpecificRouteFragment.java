@@ -377,7 +377,10 @@ public class SpecificRouteFragment extends Fragment implements OnMapReadyCallbac
     private void createPieChart()
     {
         waytypeSummaryList.observe(getViewLifecycleOwner(), summaries -> {
+            int count = 0; // Used to see if other has already been visited, so addView isn't called multiple times
+            boolean flag = true; // Used to determine if other has already been visited, to set string correctly
             for (Summary summary : summaries) {
+                System.out.println("summary: " + summary.getWayTypeAsString());
 
                 TextView toEdit;
 
@@ -388,10 +391,15 @@ public class SpecificRouteFragment extends Fragment implements OnMapReadyCallbac
                     case "Steps":
                     case "Ferry":
                     case "Construction":
-                        // TOO MANY TIMES IT GOES HERE - CANNOT ADDVIEW MULTIPLE TIMES
+                        if (count == 0) {
                         piechartParentLinearLayout.addView(children[5]);
                         toEdit = getView().findViewById(R.id.OM);
-                        getView().findViewById(R.id.OMLL).setVisibility(View.VISIBLE); break;
+                        getView().findViewById(R.id.OMLL).setVisibility(View.VISIBLE); count++;
+                        }
+                        else {
+                            toEdit = getView().findViewById(R.id.OM); flag = false;
+                        }
+                        break;
                     case "Road":
                         piechartParentLinearLayout.addView(children[0]);
                         toEdit = getView().findViewById(R.id.Road);
@@ -417,14 +425,16 @@ public class SpecificRouteFragment extends Fragment implements OnMapReadyCallbac
                         throw new IllegalStateException("Unexpected value: " + summary.getWayTypeAsString());
                 }
 
-                String toSet = summary.getWayTypeAsString() + " " + summary.getWayTypeAmountPercentage();
-                toEdit.setText(toSet);
+                if (flag) {
+                    String toSet = summary.getWayTypeAsString() + " " + summary.getWayTypeAmountPercentage();
+                    toEdit.setText(toSet);
 
-                pieChart.addPieSlice(
-                        new PieModel(
-                                summary.getWayTypeAsString(),
-                                (float)summary.getWayTypeAmount(),
-                                Color.parseColor(summary.getColorString())));
+                    pieChart.addPieSlice(
+                            new PieModel(
+                                    summary.getWayTypeAsString(),
+                                    (float) summary.getWayTypeAmount(),
+                                    Color.parseColor(summary.getColorString())));
+                }
             }
             pieChart.startAnimation();
         });
