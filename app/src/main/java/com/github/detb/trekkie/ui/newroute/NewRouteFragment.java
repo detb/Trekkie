@@ -15,15 +15,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.github.detb.trekkie.Hike;
-import com.github.detb.trekkie.HikePoint;
+import com.github.detb.trekkie.data.model.Hike;
+import com.github.detb.trekkie.data.model.HikePoint;
 import com.github.detb.trekkie.R;
-import com.github.detb.trekkie.data.Root;
-import com.github.detb.trekkie.data.Summary;
-import com.github.detb.trekkie.db.OpenRouteServiceApi;
-import com.github.detb.trekkie.db.ServiceGenerator;
 import com.github.detb.trekkie.ui.home.HomeFragment;
-import com.github.detb.trekkie.ui.specificroute.SpecificRouteFragment;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
@@ -44,7 +39,6 @@ import com.mapbox.mapboxsdk.location.modes.CameraMode;
 import com.mapbox.geojson.Feature;
 import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.mapbox.mapboxsdk.plugins.annotation.SymbolManager;
 import com.mapbox.mapboxsdk.style.layers.SymbolLayer;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 
@@ -53,15 +47,6 @@ import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconIgnorePlacem
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconImage;
 
 // classes to calculate a route
-import com.mapbox.services.android.navigation.ui.v5.route.NavigationMapRoute;
-import com.mapbox.services.android.navigation.v5.navigation.MapboxNavigation;
-import com.mapbox.api.directions.v5.models.DirectionsRoute;
-
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 
 // classes needed to launch navigation UI

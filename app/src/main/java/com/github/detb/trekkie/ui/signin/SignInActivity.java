@@ -1,4 +1,4 @@
-package com.github.detb.trekkie;
+package com.github.detb.trekkie.ui.signin;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -10,8 +10,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.firebase.ui.auth.AuthUI;
+import com.github.detb.trekkie.MainActivity;
+import com.github.detb.trekkie.R;
+import com.github.detb.trekkie.ui.register.RegisterUserActivity;
 import com.github.detb.trekkie.db.HikeFirebaseRepository;
-import com.github.detb.trekkie.db.SignInViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Arrays;

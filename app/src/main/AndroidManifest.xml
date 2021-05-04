@@ -20,12 +20,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Trekkie"
         android:fullBackupContent="@xml/backup_descriptor">
-        <activity android:name=".SignInActivity">
+        <activity android:name=".ui.signin.SignInActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
-        <activity android:name=".RegisterUserActivity">
+        <activity android:name=".ui.register.RegisterUserActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>

@@ -1,4 +1,4 @@
-package com.github.detb.trekkie.data; 
+package com.github.detb.trekkie.data.remote;
 public class Metadata{
     public String attribution;
     public String service;

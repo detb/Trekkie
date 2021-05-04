@@ -13,8 +13,8 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.github.detb.trekkie.Hike;
-import com.github.detb.trekkie.HikeAdapter;
+import com.github.detb.trekkie.data.model.Hike;
+import com.github.detb.trekkie.ui.HikeAdapter;
 import com.github.detb.trekkie.R;
 import com.github.detb.trekkie.ui.specificroute.SpecificRouteFragment;
 

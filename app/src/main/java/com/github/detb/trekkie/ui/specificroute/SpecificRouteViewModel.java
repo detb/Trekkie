@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.github.detb.trekkie.Hike;
+import com.github.detb.trekkie.data.model.Hike;
 import com.github.detb.trekkie.db.HikeRepository;
 
 public class SpecificRouteViewModel extends AndroidViewModel {

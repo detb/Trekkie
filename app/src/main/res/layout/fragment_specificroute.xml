@@ -111,6 +111,7 @@
             <!--Creating another linear layout -->
             <!-- to display pie chart details -->
             <LinearLayout
+                android:id="@+id/listParent"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="20dp"

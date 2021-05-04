@@ -1,4 +1,4 @@
-package com.github.detb.trekkie;
+package com.github.detb.trekkie.ui.register;
 
 import android.app.Application;
 

@@ -1,4 +1,4 @@
-package com.github.detb.trekkie;
+package com.github.detb.trekkie.ui.register;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +10,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.github.detb.trekkie.R;
+import com.github.detb.trekkie.ui.signin.SignInActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class RegisterUserActivity extends AppCompatActivity{

@@ -1,4 +1,4 @@
-package com.github.detb.trekkie;
+package com.github.detb.trekkie.data.model;
 
 public class HikeFirebase {
     private String title;

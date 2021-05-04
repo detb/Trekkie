@@ -1,10 +1,11 @@
-package com.github.detb.trekkie.db;
+package com.github.detb.trekkie.ui.signin;
 
 import android.app.Application;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import com.github.detb.trekkie.db.UserRepository;
 import com.google.firebase.auth.FirebaseUser;
 
 public class SignInViewModel extends AndroidViewModel {

@@ -1,4 +1,4 @@
-package com.github.detb.trekkie;
+package com.github.detb.trekkie.data.model;
 
 import androidx.room.Entity;
 import androidx.room.Ignore;
@@ -20,27 +20,23 @@ import com.mapbox.geojson.Point;
 
 @IgnoreExtraProperties
 @Entity(tableName = "hike_table")
+
 public class Hike implements Serializable {
 
-    @Ignore
-    private static final Gson gson = new Gson();
-
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
+    // Variables
     @PrimaryKey(autoGenerate = true)
     private int id;
-
-    public int getId() {
-        return id;
-    }
 
     private String title;
     private String description;
     private int pictureId;
 
+    // required to convert JSON
+    @Ignore
+    private static final Gson gson = new Gson();
+
+
+    // TypeConverters required for Room.
     @TypeConverter
     public static List<HikePoint> stringToHikePointList(String data)
     {
@@ -62,6 +58,7 @@ public class Hike implements Serializable {
     @TypeConverters(Hike.class)
     public List<HikePoint> hikePointList = new ArrayList<>();
 
+    // Constructors
     public Hike(String title, String description, int pictureId, List<HikePoint> hikePointList) {
         this.hikePointList = hikePointList;
         this.title = title;
@@ -77,6 +74,7 @@ public class Hike implements Serializable {
         this.hikePointList.addAll(hike.hikePointList);
     }
 
+    // Used to convert Serializable HikeFirebase to Hike. FIREBASE NOT WORKING
     public Hike(HikeFirebase hikeFirebase)
     {
         this.description = hikeFirebase.getDescription();
@@ -85,18 +83,19 @@ public class Hike implements Serializable {
         List<HikePoint> points = stringToHikePointList(hikeFirebase.getJsonHikePoints());
         this.hikePointList.addAll(points);
     }
+    // ALSO FIREBASE CONVERSION
+    public HikeFirebase getHikeAsHikeFirebase()
+    {
+        HikeFirebase hikeFirebase = new HikeFirebase();
+        hikeFirebase.setDescription(this.description);
+        hikeFirebase.setPictureId(this.pictureId);
+        hikeFirebase.setTitle(this.title);
+        hikeFirebase.setJsonHikePoints(hikePointListToString(this.hikePointList));
 
-    @Override
-    public String toString() {
-        return "Hike{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", pictureId=" + pictureId +
-                ", hikePointList=" + hikePointList +
-                '}';
+        return hikeFirebase;
     }
 
+    // setters and getters for hikepoints not used..
     public void addHikePoint(HikePoint hikePoint)
     {
         hikePointList.add(hikePoint);
@@ -104,6 +103,18 @@ public class Hike implements Serializable {
 
     public List<HikePoint> getHikePointList() {
         return hikePointList;
+    }
+
+    public void setHikePointList(List<HikePoint> hikePointList) {
+        this.hikePointList = hikePointList;
+    }
+
+    // getters and setters
+    public void setId(int id) {
+        this.id = id;
+    }
+    public int getId() {
+        return id;
     }
 
     public List<Point> getAllPoints() {
@@ -115,6 +126,32 @@ public class Hike implements Serializable {
         return points;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setPictureId(int pictureId) {
+        this.pictureId = pictureId;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public int getPictureId() {
+        return pictureId;
+    }
+
+
+    // Converter to make list of points into a readable string for OpenRouteService API.
     public String getCoordinatesAsString()
     {
         StringBuilder toReturn = new StringBuilder();
@@ -133,43 +170,15 @@ public class Hike implements Serializable {
         return toReturn.toString();
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+
+    @Override
+    public String toString() {
+        return "Hike{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", pictureId=" + pictureId +
+                ", hikePointList=" + hikePointList +
+                '}';
     }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setPictureId(int pictureId) {
-        this.pictureId = pictureId;
-    }
-
-    public void setHikePointList(List<HikePoint> hikePointList) {
-        this.hikePointList = hikePointList;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public int getPictureId() {
-        return pictureId;
-    }
-
-    public HikeFirebase getHikeAsHikeFirebase()
-    {
-        HikeFirebase hikeFirebase = new HikeFirebase();
-        hikeFirebase.setDescription(this.description);
-        hikeFirebase.setPictureId(this.pictureId);
-        hikeFirebase.setTitle(this.title);
-        hikeFirebase.setJsonHikePoints(hikePointListToString(this.hikePointList));
-
-        return hikeFirebase;
-    }
-
 }

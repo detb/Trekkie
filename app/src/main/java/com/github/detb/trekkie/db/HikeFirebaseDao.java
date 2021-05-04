@@ -5,8 +5,8 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
-import com.github.detb.trekkie.Hike;
-import com.github.detb.trekkie.HikeFirebase;
+import com.github.detb.trekkie.data.model.Hike;
+import com.github.detb.trekkie.data.model.HikeFirebase;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;

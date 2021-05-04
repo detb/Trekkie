@@ -6,14 +6,13 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-import com.github.detb.trekkie.Hike;
-import com.github.detb.trekkie.HikePoint;
+import com.github.detb.trekkie.data.model.Hike;
+import com.github.detb.trekkie.data.model.HikePoint;
 
 @Database(entities = {Hike.class, HikePoint.class}, version = 1)
 public abstract class HikeDatabase extends RoomDatabase {
     private static HikeDatabase instance;
     public abstract HikeDao hikeDao();
-    public abstract HikePointDao hikePointDao();
 
     public static synchronized HikeDatabase getInstance(Context context){
         if (instance == null)

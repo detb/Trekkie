@@ -5,56 +5,34 @@ import android.os.AsyncTask;
 
 import androidx.lifecycle.LiveData;
 
-import com.github.detb.trekkie.Hike;
+import com.github.detb.trekkie.data.model.Hike;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class HikeRepository {
-    // Firebase stuff, not working
-    final FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference ref = database.getReference();
-    DatabaseReference hikeRef = ref.child("/hikes");
-
+    // variables declaration
     private final HikeDao hikeDao;
-    private final HikePointDao hikePointDao;
     private static HikeRepository instance;
     private final LiveData<List<Hike>> allHikes;
 
+    // Constructor
     private HikeRepository(Application application)
     {
         HikeDatabase database = HikeDatabase.getInstance(application);
         hikeDao = database.hikeDao();
-        hikePointDao = database.hikePointDao();
         allHikes = hikeDao.getAllHikes();
     }
 
+    // getInstance
     public static synchronized HikeRepository getInstance(Application application){
         if (instance == null)
             instance = new HikeRepository(application);
         return instance;
     }
 
-    // Method not working
-    public void saveHikeToFirebase(Hike hike)
-    {
-        hikeRef.setValue("Hey");
-        //hikeRef.setValue(hike);
-    }
-
-
-    public LiveData<List<Hike>> getAllHikes(){
-        return allHikes;
-    }
-
-    public LiveData<Hike> getHike(int id)
-    {
-        return hikeDao.getHike(id);
-    }
-
+    // insert
     public void insert(Hike hike)
     {
         new InsertHikeAsync(hikeDao).execute(hike);
@@ -74,6 +52,17 @@ public class HikeRepository {
         }
     }
 
+    // get
+    public LiveData<List<Hike>> getAllHikes(){
+        return allHikes;
+    }
+
+    public LiveData<Hike> getHike(int id)
+    {
+        return hikeDao.getHike(id);
+    }
+
+    // delete
     public void delete(Hike hike)
     {
         new DeleteHikeAsync(hikeDao).execute(hike);

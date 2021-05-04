@@ -2,7 +2,7 @@ package com.github.detb.trekkie.db;
 
 import androidx.lifecycle.LiveData;
 
-import com.github.detb.trekkie.Hike;
+import com.github.detb.trekkie.data.model.Hike;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.List;

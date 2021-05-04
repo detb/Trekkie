@@ -1,4 +1,4 @@
-package com.github.detb.trekkie;
+package com.github.detb.trekkie.data.model;
 
 import androidx.room.Entity;
 import androidx.room.Ignore;
@@ -11,20 +11,20 @@ import com.google.gson.reflect.TypeToken;
 import com.mapbox.geojson.Point;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Entity(tableName = "hikePoints")
 public class HikePoint {
+    // variables declaration
+    @TypeConverters(HikePoint.class)
+    public Point position;
+    private String description;
 
+    // used to convert to JSON
     @Ignore
     private static final Gson gson = new Gson();
 
-    @PrimaryKey(autoGenerate = true)
-    private int id;
-
-
+    // TypeConverters used by Room
     @TypeConverter
     public static Point stringToPoint(String data)
     {
@@ -43,16 +43,16 @@ public class HikePoint {
         return gson.toJson(point);
     }
 
-    @TypeConverters(HikePoint.class)
-    public Point position;
+    @PrimaryKey(autoGenerate = true)
+    private int id;
 
-    private String description;
-
+    // Constructor
     public HikePoint(Point position, String description) {
         this.position = position;
         this.description = description;
     }
 
+    // Getters and setters
     public int getId() {
         return id;
     }
@@ -65,14 +65,6 @@ public class HikePoint {
         return position;
     }
 
-    @Override
-    public String toString() {
-        return "HikePoint{" +
-                "position=" + position +
-                ", description='" + description + '\'' +
-                '}';
-    }
-
     public void setPosition(Point position) {
         this.position = position;
     }
@@ -83,6 +75,14 @@ public class HikePoint {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public String toString() {
+        return "HikePoint{" +
+                "position=" + position +
+                ", description='" + description + '\'' +
+                '}';
     }
 }
 

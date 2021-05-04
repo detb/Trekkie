@@ -1,4 +1,4 @@
-package com.github.detb.trekkie.data; 
+package com.github.detb.trekkie.data.remote;
 import java.util.List; 
 public class Query{
     public List<List<Double>> coordinates;

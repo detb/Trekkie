@@ -1,7 +1,7 @@
 package com.github.detb.trekkie.db;
 
 
-import com.github.detb.trekkie.data.Root;
+import com.github.detb.trekkie.data.remote.Root;
 
 import okhttp3.RequestBody;
 import retrofit2.Call;

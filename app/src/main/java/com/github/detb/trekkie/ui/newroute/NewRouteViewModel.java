@@ -3,11 +3,8 @@ package com.github.detb.trekkie.ui.newroute;
 import android.app.Application;
 
 import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
-import com.github.detb.trekkie.Hike;
+import com.github.detb.trekkie.data.model.Hike;
 import com.github.detb.trekkie.db.HikeFirebaseRepository;
 import com.github.detb.trekkie.db.HikeRepository;
 
