@@ -58,23 +58,25 @@ import java.util.List;
 
 
 public class NewRouteFragment extends Fragment implements OnMapReadyCallback, View.OnClickListener, MapboxMap.OnMapClickListener, PermissionsListener {
+    // ViewModel
+    private NewRouteViewModel newRouteViewModel;
 
-
+    // Variables handling layout + Data
+        // MAP
     private MapView mapView;
     private MapboxMap mapboxMap;
 
-    // variables for adding location layer
-    private PermissionsManager permissionsManager;
-    private LocationComponent locationComponent;
+        // HIKEPOINTS
+    private final List<HikePoint> hikePoints = new ArrayList<>();
 
-    // variables needed to initialize navigation
+        // BUTTONS AND TEXT
     private Button addPoint;
     private Button addHike;
     private EditText pointDescriptionEditText;
 
-    private final List<HikePoint> hikePoints = new ArrayList<>();
-
-    private NewRouteViewModel newRouteViewModel;
+    // variables for adding location layer
+    private PermissionsManager permissionsManager;
+    private LocationComponent locationComponent;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -85,6 +87,7 @@ public class NewRouteFragment extends Fragment implements OnMapReadyCallback, Vi
                 new ViewModelProvider(this).get(NewRouteViewModel.class);
         View root = inflater.inflate(R.layout.fragment_newroute, container, false);
 
+        // Setting layout variables
         pointDescriptionEditText = root.findViewById(R.id.point_description);
         pointDescriptionEditText.setOnClickListener(this);
 
@@ -97,6 +100,7 @@ public class NewRouteFragment extends Fragment implements OnMapReadyCallback, Vi
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
 
+        // OnclickListener for add hike button
         addHike.setOnClickListener(v -> {
             Hike hike;
 

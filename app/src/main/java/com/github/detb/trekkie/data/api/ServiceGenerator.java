@@ -1,4 +1,4 @@
-package com.github.detb.trekkie.db;
+package com.github.detb.trekkie.data.api;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;

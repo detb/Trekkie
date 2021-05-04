@@ -1,4 +1,4 @@
-package com.github.detb.trekkie.db;
+package com.github.detb.trekkie.db.auth;
 
 import androidx.lifecycle.LiveData;
 

@@ -1,4 +1,4 @@
-package com.github.detb.trekkie.db;
+package com.github.detb.trekkie.db.room;
 
 import android.app.Application;
 import android.os.AsyncTask;
@@ -6,8 +6,6 @@ import android.os.AsyncTask;
 import androidx.lifecycle.LiveData;
 
 import com.github.detb.trekkie.data.model.Hike;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 

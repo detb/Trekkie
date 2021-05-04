@@ -7,7 +7,7 @@ import androidx.lifecycle.LiveData;
 
 import com.github.detb.trekkie.data.model.Hike;
 import com.github.detb.trekkie.db.HikeFirebaseRepository;
-import com.github.detb.trekkie.db.HikeRepository;
+import com.github.detb.trekkie.db.room.HikeRepository;
 
 import java.util.List;
 

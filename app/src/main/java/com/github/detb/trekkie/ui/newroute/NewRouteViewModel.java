@@ -6,7 +6,7 @@ import androidx.lifecycle.AndroidViewModel;
 
 import com.github.detb.trekkie.data.model.Hike;
 import com.github.detb.trekkie.db.HikeFirebaseRepository;
-import com.github.detb.trekkie.db.HikeRepository;
+import com.github.detb.trekkie.db.room.HikeRepository;
 
 public class NewRouteViewModel extends AndroidViewModel {
 

@@ -34,8 +34,8 @@ import com.github.detb.trekkie.R;
 import com.github.detb.trekkie.data.remote.Root;
 import com.github.detb.trekkie.data.remote.Summary;
 import com.github.detb.trekkie.data.remote.Feature;
-import com.github.detb.trekkie.db.OpenRouteServiceApi;
-import com.github.detb.trekkie.db.ServiceGenerator;
+import com.github.detb.trekkie.data.api.OpenRouteServiceApi;
+import com.github.detb.trekkie.data.api.ServiceGenerator;
 import com.github.detb.trekkie.ui.home.HomeFragment;
 import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.android.core.permissions.PermissionsManager;
@@ -76,7 +76,7 @@ public class SpecificRouteFragment extends Fragment implements OnMapReadyCallbac
     // ViewModel
     private SpecificRouteViewModel specificRouteViewModel;
 
-    // Variables handling layout
+    // Variables handling layout + LiveData
         // MAP
     private MapView hikeMapView;
     private MapboxMap mapboxMap;
@@ -441,23 +441,17 @@ public class SpecificRouteFragment extends Fragment implements OnMapReadyCallbac
             String text = "{\"coordinates\":[" + coordinates + "],\"elevation\":\"true\",\"extra_info\":[\"steepness\",\"waytype\",\"surface\"],\"instructions\":\"false\",\"units\":\"m\"}";
             RequestBody body =
                     RequestBody.create(MediaType.parse("text/plain"), text);
+
             Call<Root> call = api.getHikeData(body);
 
             call.enqueue(new Callback<Root>() {
                 @Override
                 public void onResponse(Call<Root> call, Response<Root> response) {
-
                     if (response.code() == 200)
                     {
                         for (Feature feature : response.body().features
                         ) {
-                            System.out.println("surface: ");
-                            for (Summary summary:feature.properties.extras.surface.summary
-                            ) {
-
-                            }
-                            System.out.println("waytype: ");
-                            waytypeSummaryList.postValue(new ArrayList<>(feature.properties.extras.waytypes.summary));
+                            waytypeSummaryList.postValue(new ArrayList<>(feature.properties.extras.waytypes.summary)); // extras.surface.summary for surface
                         }
                     }
                 }
@@ -467,8 +461,9 @@ public class SpecificRouteFragment extends Fragment implements OnMapReadyCallbac
 
                 }
             });
-
         });
+
+        // Create pie chart after getting all data necessary
         createPieChart();
     }
 }

@@ -5,7 +5,7 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 
-import com.github.detb.trekkie.db.UserRepository;
+import com.github.detb.trekkie.db.auth.UserRepository;
 
 public class RegisterUserViewModel extends AndroidViewModel {
 

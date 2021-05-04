@@ -1,4 +1,4 @@
-package com.github.detb.trekkie.db;
+package com.github.detb.trekkie.data.api;
 
 
 import com.github.detb.trekkie.data.remote.Root;
