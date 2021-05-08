@@ -83,10 +83,16 @@
         android:id="@+id/cardViewGraph"
         android:layout_width="match_parent"
         android:layout_height="200dp"
+        android:layout_marginTop="16dp"
         android:elevation="10dp"
         app:cardCornerRadius="10dp"
-        app:layout_constraintTop_toBottomOf="@+id/specificHikeMapView"
-        android:layout_marginTop="16dp">
+        app:layout_constraintTop_toBottomOf="@+id/specificHikeMapView">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="Way types" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -95,7 +101,6 @@
             android:weightSum="2">
 
             <!--Pie chart to display the data-->
-
             <org.eazegraph.lib.charts.PieChart xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/piechart"
                 android:layout_width="0dp"
@@ -264,6 +269,53 @@
 
         </LinearLayout>
 
+    </androidx.cardview.widget.CardView>
+
+ <!--
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardViewLineChart"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:elevation="10dp"
+        app:cardCornerRadius="10dp"
+        app:layout_constraintTop_toBottomOf="@+id/cardViewGraph"
+        android:layout_marginTop="16dp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="Elevation chart"/>
+
+        <org.eazegraph.lib.charts.ValueLineChart
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/LineChartElevation"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            app:egUseCubic="true"
+            app:egUseOverlapFill="true"
+            app:egCurveSmoothness="0.3" />
+
+    </androidx.cardview.widget.CardView> -->
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardViewHikePointDescriptions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/cardViewGraph">
+
+            <TableLayout
+                android:id="@+id/hike_description_table"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginBottom="16dp">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="List of points on during the hike" />
+
+            </TableLayout>
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

@@ -1,6 +1,7 @@
 package com.github.detb.trekkie.ui.newroute;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -55,6 +56,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 
 public class NewRouteFragment extends Fragment implements OnMapReadyCallback, View.OnClickListener, MapboxMap.OnMapClickListener, PermissionsListener {
@@ -114,13 +116,21 @@ public class NewRouteFragment extends Fragment implements OnMapReadyCallback, Vi
                 Toast.makeText(getContext(),"Please give your hike a description",Toast.LENGTH_LONG).show();
             }
             else {
-                hike = new Hike(nameOfHike, descriptionOfHike, R.drawable.defaulthike, hikePoints);
+                //// Pick random picture for the hike
+                //final TypedArray imgs = getResources().obtainTypedArray(R.array.hikeicons);
+                //final Random rand = new Random();
+                //final int rndInt = rand.nextInt(imgs.length());
+                //final int resID = imgs.getResourceId(rndInt, 0);
+
+                hike = new Hike(nameOfHike, descriptionOfHike, R.drawable.defaulthike1, hikePoints);
                 newRouteViewModel.pushHikeToDb(hike);
-                // changeFragment();
+
                 Toast.makeText(getContext(), "Hike Added", Toast.LENGTH_SHORT).show();
                 mapboxMap.clear();
                 ((EditText) root.findViewById(R.id.hike_name_string)).getText().clear();
                 ((EditText) root.findViewById(R.id.hike_description_string)).getText().clear();
+
+                changeFragment();
             }
         });
         return root;
@@ -283,7 +293,7 @@ public class NewRouteFragment extends Fragment implements OnMapReadyCallback, Vi
         FragmentTransaction fragmentTransaction = getActivity()
                 .getSupportFragmentManager().beginTransaction();
         HomeFragment fragment = new HomeFragment();
-        fragmentTransaction.replace(R.id.nav_newroute, fragment);
+        fragmentTransaction.replace(R.id.nav_host_fragment, fragment);
         fragmentTransaction.addToBackStack( "tag" );
         fragmentTransaction.commit();
     }

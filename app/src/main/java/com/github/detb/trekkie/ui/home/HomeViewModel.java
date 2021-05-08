@@ -15,13 +15,13 @@ public class HomeViewModel extends AndroidViewModel {
 
 
     private final HikeRepository hikeRepository;
-    private final HikeFirebaseRepository hikeFirebaseRepository;
+    //private final HikeFirebaseRepository hikeFirebaseRepository;
 
     public HomeViewModel(Application application) {
         super(application);
 
         hikeRepository = HikeRepository.getInstance(application);
-        hikeFirebaseRepository = HikeFirebaseRepository.getInstance();
+        //hikeFirebaseRepository = HikeFirebaseRepository.getInstance();
     }
 
     public LiveData<List<Hike>> getHikeLiveData() {

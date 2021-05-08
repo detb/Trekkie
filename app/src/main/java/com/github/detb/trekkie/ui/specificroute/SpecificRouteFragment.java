@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -93,6 +95,8 @@ public class SpecificRouteFragment extends Fragment implements OnMapReadyCallbac
     private MutableLiveData<List<Summary>> waytypeSummaryList;
     private LinearLayout piechartParentLinearLayout;
 
+        // TABLE
+    private TableLayout descriptionTable;
 
     // Variables for adding location layer
     private PermissionsManager permissionsManager;
@@ -128,6 +132,7 @@ public class SpecificRouteFragment extends Fragment implements OnMapReadyCallbac
         pieChart = root.findViewById(R.id.piechart);
         specificHikeTime = root.findViewById(R.id.specificHikeTime);
         hikeMapView = root.findViewById(R.id.specificHikeMapView);
+        descriptionTable = root.findViewById(R.id.hike_description_table);
 
 
         hikeMapView.onCreate(savedInstanceState);
@@ -148,7 +153,6 @@ public class SpecificRouteFragment extends Fragment implements OnMapReadyCallbac
 
         // get children of linearlayout. For sorting
         for (int i=0; i < childcount; i++){
-            System.out.println("test i: " + i);
             children[i] = piechartParentLinearLayout.getChildAt(i);
         }
         // removing linearlayout views, for sorting
@@ -197,6 +201,8 @@ public class SpecificRouteFragment extends Fragment implements OnMapReadyCallbac
         // api call to get statistics about the route (waytypes, height etc.)
         getRouteData();
 
+        // Creating the table with point descriptions
+        createDescriptionTable();
         return root;
 }
 
@@ -259,11 +265,22 @@ public class SpecificRouteFragment extends Fragment implements OnMapReadyCallbac
             timeValue.observe(getViewLifecycleOwner(), new Observer<Integer>() {
                 @Override
                 public void onChanged(Integer integer) {
-                    mapboxMap.setCameraPosition(new CameraPosition.Builder().target(latlng).zoom(timeValue.getValue() / 9.5).build()); // need better calculation
+                    mapboxMap.setCameraPosition(new CameraPosition.Builder().target(latlng).zoom(getZoom()).build()); // need better calculation
                 }
             });
         });
 
+    }
+
+    private double getZoom()
+    {
+        if (timeValue.getValue() >= 300.0)
+            return 10.5;
+        else if (100.0 < timeValue.getValue() && timeValue.getValue() < 300.0)
+            return 11.5;
+        else if (timeValue.getValue() <= 100)
+            return 12;
+        return 10;
     }
 
         private void getRoute(List<HikePoint> hikePoints) {
@@ -475,5 +492,59 @@ public class SpecificRouteFragment extends Fragment implements OnMapReadyCallbac
 
         // Create pie chart after getting all data necessary
         createPieChart();
+    }
+
+
+    private void createDescriptionTable()
+    {
+        //PARAMETERS TO SET WEIGHT
+        TableRow.LayoutParams params = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f);
+        TableRow.LayoutParams params2 = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 3f);
+
+        // Table row 0
+        TableRow tableRow0 = new TableRow(getContext());
+
+        // Creating textviews for the table row 0
+        TextView numberTextView0 = new TextView(getContext());
+        TextView descriptionTextView0 = new TextView(getContext());
+
+        // Setting text and parameters to add weighting
+        numberTextView0.setText("point #");
+        numberTextView0.setLayoutParams(params);
+        descriptionTextView0.setText("Description");
+        descriptionTextView0.setLayoutParams(params2);
+
+        // Adding textviews to the tablerow
+        tableRow0.addView(numberTextView0);
+        tableRow0.addView(descriptionTextView0);
+
+        // Adding the table row 0 to the table
+        descriptionTable.addView(tableRow0);
+
+        specificHike.observe(getViewLifecycleOwner(), hike -> {
+            for (int i = 0; i < specificHike.getValue().hikePointList.size(); i++) {
+                // Creating tablerow and textviews to insert
+                TableRow tableRow = new TableRow(getContext());
+
+                TextView numberTextView = new TextView(getContext());
+                TextView descriptionTextView = new TextView(getContext());
+
+                // Setting text
+                numberTextView.setText(i + 1 + "");
+                String descriptionText = specificHike.getValue().hikePointList.get(i).getDescription();
+                descriptionTextView.setText(descriptionText);
+
+                // Adding parameters to set weight
+                numberTextView.setLayoutParams(params);
+                descriptionTextView.setLayoutParams(params2);
+
+                // Assigning text to table row
+                tableRow.addView(numberTextView);
+                tableRow.addView(descriptionTextView);
+
+                // Adding new tablerow to the table
+                descriptionTable.addView(tableRow);
+            }
+        });
     }
 }
