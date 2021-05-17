@@ -20,6 +20,7 @@ import com.github.detb.trekkie.data.model.Hike;
 import com.github.detb.trekkie.data.model.HikePoint;
 import com.github.detb.trekkie.R;
 import com.github.detb.trekkie.ui.home.HomeFragment;
+import com.google.android.material.textfield.TextInputLayout;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
@@ -90,7 +91,7 @@ public class NewRouteFragment extends Fragment implements OnMapReadyCallback, Vi
         View root = inflater.inflate(R.layout.fragment_newroute, container, false);
 
         // Setting layout variables
-        pointDescriptionEditText = root.findViewById(R.id.point_description);
+        pointDescriptionEditText = ((TextInputLayout)root.findViewById(R.id.point_description)).getEditText();
         pointDescriptionEditText.setOnClickListener(this);
 
         addPoint = root.findViewById(R.id.addPoint);
@@ -106,8 +107,8 @@ public class NewRouteFragment extends Fragment implements OnMapReadyCallback, Vi
         addHike.setOnClickListener(v -> {
             Hike hike;
 
-            String nameOfHike = ((EditText)root.findViewById(R.id.hike_name_string)).getText().toString();
-            String descriptionOfHike = ((EditText)root.findViewById(R.id.hike_description_string)).getText().toString();
+            String nameOfHike = ((TextInputLayout)root.findViewById(R.id.hike_name_string)).getEditText().getText().toString();
+            String descriptionOfHike = ((TextInputLayout)root.findViewById(R.id.hike_description_string)).getEditText().getText().toString();
 
             if(TextUtils.isEmpty(nameOfHike)){
                 Toast.makeText(getContext(),"Please give your hike a name",Toast.LENGTH_LONG).show();
@@ -127,8 +128,8 @@ public class NewRouteFragment extends Fragment implements OnMapReadyCallback, Vi
 
                 Toast.makeText(getContext(), "Hike Added", Toast.LENGTH_SHORT).show();
                 mapboxMap.clear();
-                ((EditText) root.findViewById(R.id.hike_name_string)).getText().clear();
-                ((EditText) root.findViewById(R.id.hike_description_string)).getText().clear();
+                ((TextInputLayout) root.findViewById(R.id.hike_name_string)).getEditText().getText().clear();
+                ((TextInputLayout) root.findViewById(R.id.hike_description_string)).getEditText().getText().clear();
 
                 changeFragment();
             }

@@ -36,6 +36,7 @@ public class HikeAdapter extends RecyclerView.Adapter<HikeAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
         viewHolder.title.setText(hikes.get(position).getTitle());
         viewHolder.description.setText(hikes.get(position).getDescription());
+        viewHolder.image.setImageResource(R.drawable.defaulthike1);
         viewHolder.image.setImageResource(hikes.get(position).getPictureId());
     }
 

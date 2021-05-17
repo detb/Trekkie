@@ -11,14 +11,14 @@ import com.github.detb.trekkie.db.room.HikeRepository;
 public class NewRouteViewModel extends AndroidViewModel {
 
     private final HikeRepository hikeRepository;
-    private final HikeFirebaseRepository hikeFirebaseRepository;
+    //private final HikeFirebaseRepository hikeFirebaseRepository;
 
     public NewRouteViewModel(Application application) {
         super(application);
 
         hikeRepository = HikeRepository.getInstance(application);
-        hikeFirebaseRepository = HikeFirebaseRepository.getInstance();
-        hikeFirebaseRepository.setText();
+        //hikeFirebaseRepository = HikeFirebaseRepository.getInstance();
+        //hikeFirebaseRepository.setText();
     }
 
     public void pushHikeToDb(Hike hike){

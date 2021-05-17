@@ -34,11 +34,4 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="email" />
-
-    <Button
-        android:id="@+id/logoutButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="sign out"
-        android:textSize="10dp" />
 </LinearLayout>
