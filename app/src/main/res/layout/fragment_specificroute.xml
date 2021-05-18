@@ -39,7 +39,7 @@
     <TextView
         android:id="@+id/specificHikeDescription"
         android:layout_width="match_parent"
-        android:layout_height="55dp"
+        android:layout_height="48dp"
         android:layout_marginTop="16dp"
         android:layout_marginHorizontal="16dp"
         android:padding="5sp"
@@ -62,7 +62,15 @@
             android:id="@+id/specificHikeTime"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="time"
+            android:text="Time"
+            android:textAlignment="textEnd"
+            android:textColor="#000" />
+        <TextView
+            android:id="@+id/specificHikeLength"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="16dp"
+            android:text="Length"
             android:textAlignment="textEnd"
             android:textColor="#000" />
     </com.mapbox.mapboxsdk.maps.MapView>

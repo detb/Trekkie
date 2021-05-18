@@ -59,6 +59,7 @@ import com.mapbox.mapboxsdk.style.layers.SymbolLayer;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 import com.mapbox.services.android.navigation.ui.v5.route.NavigationMapRoute;
 import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute;
+import com.mapbox.services.android.navigation.v5.navigation.NavigationWalkingOptions;
 
 import org.eazegraph.lib.charts.PieChart;
 import org.eazegraph.lib.models.PieModel;
@@ -87,6 +88,7 @@ public class SpecificRouteFragment extends Fragment implements OnMapReadyCallbac
         // SPECIFIC HIKE
     private MutableLiveData<Hike> specificHike;
     private TextView specificHikeTime;
+    private TextView specificHikeLength;
     private MutableLiveData<Integer> timeValue;
 
         // PIE CHART
@@ -131,6 +133,7 @@ public class SpecificRouteFragment extends Fragment implements OnMapReadyCallbac
         specificScrollView = root.findViewById(R.id.specificHikeScrollView);
         pieChart = root.findViewById(R.id.piechart);
         specificHikeTime = root.findViewById(R.id.specificHikeTime);
+        specificHikeLength = root.findViewById(R.id.specificHikeLength);
         hikeMapView = root.findViewById(R.id.specificHikeMapView);
         descriptionTable = root.findViewById(R.id.hike_description_table);
 
@@ -283,16 +286,17 @@ public class SpecificRouteFragment extends Fragment implements OnMapReadyCallbac
         return 10;
     }
 
-        private void getRoute(List<HikePoint> hikePoints) {
+    private void getRoute(List<HikePoint> hikePoints) {
         NavigationRoute.Builder navRouteBuilder = NavigationRoute.builder(getContext()).accessToken(Mapbox.getAccessToken())
             .origin(hikePoints.get(0).position)
             .destination(hikePoints.get(hikePoints.size() - 1).position);
 
             navRouteBuilder.profile(DirectionsCriteria.PROFILE_WALKING);
-           for (HikePoint hikePoint : hikePoints
-                ) {
-               navRouteBuilder.addWaypoint(hikePoint.position);
-           }
+
+            // Loop adding waypoints
+            for (int i = 1; i < hikePoints.size() - 1; i++) {
+                navRouteBuilder.addWaypoint(hikePoints.get(i).position);
+            }
 
             navRouteBuilder.build().getRoute(new Callback<DirectionsResponse>() {
                     @SuppressLint("SetTextI18n")
@@ -316,6 +320,7 @@ public class SpecificRouteFragment extends Fragment implements OnMapReadyCallbac
                             navigationMapRoute = new NavigationMapRoute(null, hikeMapView, mapboxMap, R.style.NavigationLocationLayerStyle);
 
                             timeValue.setValue((int) TimeUnit.SECONDS.toMinutes(currentRoute.duration().longValue()));
+                            specificHikeLength.setText(currentRoute.distance().intValue() + " meters");
                             specificHikeTime.setText(timeValue.getValue() + " minutes");
                         }
                         navigationMapRoute.addRoute(currentRoute);
