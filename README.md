@@ -32,7 +32,12 @@ Som bruger vil jeg...
 
 
 ### Kilder
+
 Til projektet er der hentet inspiration og vejledning fra følgende kilder
+
 https://docs.mapbox.com/help/tutorials/first-steps-android-sdk/
+
 https://docs.mapbox.com/help/tutorials/
+
 https://www.geeksforgeeks.org/how-to-add-a-pie-chart-into-an-android-application/
+
