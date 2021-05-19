@@ -30,6 +30,10 @@ Som bruger vil jeg...
 6. [ ] vælge et andet sprog end dansk eller engelsk.
 
 
+### Video demonstration
+
+https://www.youtube.com/watch?v=ufM2h8bOHI8
+
 
 ### Kilder
 
